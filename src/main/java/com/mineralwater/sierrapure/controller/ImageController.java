@@ -4,6 +4,7 @@ import com.mineralwater.sierrapure.dto.ApiResponse;
 import com.mineralwater.sierrapure.dto.ImageAssetDTO;
 import com.mineralwater.sierrapure.model.ImageAsset;
 import com.mineralwater.sierrapure.service.ImageStorageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/images")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Images", description = "Upload, serve and delete images — bottles, client logos, Sierra Pure logo, hero images")
 public class ImageController {
 
     private final ImageStorageService imageStorageService;

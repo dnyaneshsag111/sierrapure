@@ -5,6 +5,7 @@ import com.mineralwater.sierrapure.dto.LabReportDTO;
 import com.mineralwater.sierrapure.model.LabReport;
 import com.mineralwater.sierrapure.service.LabReportService;
 import com.mineralwater.sierrapure.service.PDFService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/lab-reports")
 @RequiredArgsConstructor
+@Tag(name = "Lab Reports", description = "CRUD, publish toggle, search, PDF download and QR code for lab reports")
 public class LabReportController {
 
     private final LabReportService labReportService;

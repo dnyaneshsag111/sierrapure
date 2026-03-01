@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quotation from Sierra Pure</title>
+  <style>
+    @page { size: A4; margin: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #F0F4F8; color: #0F1F35; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .wrapper { max-width: 680px; margin: 32px auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(10,35,66,0.12); }
+
+    /* ── Header ── */
+    .header { background: linear-gradient(135deg, #0A2342 0%, #1565C0 100%); padding: 36px 40px; }
+    .header-top { display: table; width: 100%; }
+    .header-left  { display: table-cell; vertical-align: top; }
+    .header-right { display: table-cell; vertical-align: top; text-align: right; }
+    .logo-text { color: white; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    .logo-sub  { color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 2px; margin-top: 2px; }
+    .quote-label { color: #4FC3F7; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
+    .quote-num   { color: white; font-size: 20px; font-weight: 800; margin-top: 2px; }
+    .quote-meta  { color: rgba(255,255,255,0.55); font-size: 12px; margin-top: 4px; }
+
+    /* ── Body ── */
+    .body { padding: 36px 40px; }
+    .greeting { font-size: 18px; font-weight: 700; color: #0A2342; margin-bottom: 8px; }
+    .intro { color: #5C6B85; font-size: 14px; line-height: 1.7; margin-bottom: 28px; }
+    .section-title { font-size: 11px; font-weight: 700; color: #5C6B85; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
+
+    /* ── Items table ── */
+    table.items { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    table.items thead th { background: #0A2342; color: white; padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 700; }
+    table.items tbody td { padding: 10px 12px; border-bottom: 1px solid #F0F4F8; font-size: 13px; vertical-align: top; }
+    table.items tbody tr:nth-child(even) td { background: #F8FBFF; }
+    .item-desc { font-weight: 600; color: #0A2342; }
+    .item-note { font-size: 11px; color: #5C6B85; margin-top: 2px; }
+
+    /* ── Totals — table layout instead of flex ── */
+    .totals { margin-left: auto; width: 280px; margin-top: 16px; }
+    .total-row { display: table; width: 100%; padding: 5px 0; font-size: 13px; border-bottom: 1px solid #F0F4F8; }
+    .total-row .t-label { display: table-cell; text-align: left; }
+    .total-row .t-value { display: table-cell; text-align: right; }
+    .total-row.grand { border-top: 2px solid #1565C0; border-bottom: none; padding-top: 10px; margin-top: 4px; font-weight: 800; font-size: 15px; color: #1565C0; }
+    .discount-val { color: #c0392b; }
+
+    /* ── Info boxes — table layout instead of flex ── */
+    .info-boxes { display: table; width: 100%; border-spacing: 0; margin: 28px 0; }
+    .info-box { display: table-cell; vertical-align: top; width: 33.33%; background: #F8FBFF; border: 1px solid #E2EAF4; border-radius: 8px; padding: 16px; }
+    .info-box + .info-box { border-left: none; }
+    .info-box-label { font-size: 10px; font-weight: 700; color: #5C6B85; letter-spacing: 1.5px; margin-bottom: 6px; }
+    .info-box-value { font-size: 14px; font-weight: 700; color: #0A2342; }
+    .info-box-sub   { font-size: 12px; color: #5C6B85; margin-top: 2px; }
+
+    /* ── Terms / Notes ── */
+    .terms-box { background: #F8FBFF; border: 1px solid #E2EAF4; border-radius: 8px; padding: 20px; margin-top: 24px; }
+    .terms-text { font-size: 12px; color: #5C6B85; line-height: 1.8; white-space: pre-line; }
+
+    /* ── CTA ── */
+    .cta { text-align: center; margin: 32px 0 8px; }
+    .cta a { display: inline-block; background: linear-gradient(135deg, #0A2342, #1565C0); color: white; text-decoration: none; padding: 14px 36px; border-radius: 100px; font-weight: 700; font-size: 14px; }
+
+    /* ── Footer ── */
+    .footer { background: #F8FBFF; border-top: 1px solid #E2EAF4; padding: 24px 40px; text-align: center; }
+    .footer p { font-size: 11px; color: #5C6B85; line-height: 1.7; }
+
+    @media print {
+      body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .wrapper { box-shadow: none; margin: 0; border-radius: 0; max-width: 100%; }
+      .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-left">
+        <div class="logo-text">Sierra Pure</div>
+        <div class="logo-sub">MINERAL WATER</div>
+      </div>
+      <div class="header-right">
+        <div class="quote-label">QUOTATION</div>
+        <div class="quote-num" th:text="${quotationNumber}">QT-20260301-0001</div>
+        <div class="quote-meta" th:text="${'Date: ' + createdAt}">Date: 01 Mar 2026</div>
+        <div class="quote-meta" th:text="${'Valid until: ' + validUntil}">Valid until: 16 Mar 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+    <div class="greeting" th:text="${'Dear ' + clientName + (clientCompany != null and clientCompany != '' ? ' (' + clientCompany + ')' : '') + ','}">
+      Dear Client,
+    </div>
+    <p class="intro">
+      Thank you for your interest in Sierra Pure. Please find below your personalised quotation.
+      All our water is BIS certified, 7-stage filtered and NABL lab-tested daily.
+    </p>
+
+    <!-- Info boxes -->
+    <div class="info-boxes">
+      <div class="info-box">
+        <div class="info-box-label">QUOTATION #</div>
+        <div class="info-box-value" th:text="${quotationNumber}">QT-20260301-0001</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-label">VALID UNTIL</div>
+        <div class="info-box-value" th:text="${validUntil}">16 Mar 2026</div>
+        <div class="info-box-sub">After this date prices may vary</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-label">GRAND TOTAL</div>
+        <div class="info-box-value" th:text="${'₹' + totalAmount}">₹0.00</div>
+        <div class="info-box-sub" th:text="${'incl. GST ' + gstPercent + '%'}">incl. GST 18%</div>
+      </div>
+    </div>
+
+    <!-- Line items -->
+    <div class="section-title">Line Items</div>
+    <table class="items">
+      <thead>
+        <tr>
+          <th style="width:30px">#</th>
+          <th>Description</th>
+          <th style="width:60px">Size</th>
+          <th style="width:55px">Qty</th>
+          <th style="width:90px">Unit Price</th>
+          <th style="width:100px">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="item, stat : ${items}">
+          <td th:text="${stat.index + 1}">1</td>
+          <td>
+            <div class="item-desc" th:text="${item.description != null and item.description != '' ? item.description : 'Sierra Pure ' + item.size + ' Mineral Water'}">Item</div>
+            <div class="item-note" th:if="${item.note != null and item.note != ''}" th:text="${item.note}"></div>
+          </td>
+          <td th:text="${item.size}">500ml</td>
+          <td th:text="${#numbers.formatInteger(item.quantity, 1, 'COMMA')}">100</td>
+          <td th:text="${'₹' + #numbers.formatDecimal(item.unitPrice, 1, 2)}">₹14.00</td>
+          <td th:text="${'₹' + #numbers.formatDecimal(item.quantity * item.unitPrice, 1, 2)}">₹1,400.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Totals -->
+    <div class="totals">
+      <div class="total-row">
+        <span class="t-label">Subtotal</span>
+        <span class="t-value" th:text="${'₹' + subtotal}">₹0.00</span>
+      </div>
+      <div class="total-row" th:if="${discount != '0'}">
+        <span class="t-label" th:text="${'Discount (' + discount + '%)'}">Discount</span>
+        <span class="t-value discount-val" th:text="${'-₹' + discountAmount}">-₹0.00</span>
+      </div>
+      <div class="total-row">
+        <span class="t-label" th:text="${'GST (' + gstPercent + '%)'}">GST (18%)</span>
+        <span class="t-value" th:text="${'₹' + gstAmount}">₹0.00</span>
+      </div>
+      <div class="total-row grand">
+        <span class="t-label">Grand Total</span>
+        <span class="t-value" th:text="${'₹' + totalAmount}">₹0.00</span>
+      </div>
+    </div>
+
+    <!-- Terms -->
+    <div class="terms-box" th:if="${termsAndConditions != null and termsAndConditions != ''}">
+      <div class="section-title" style="margin-bottom:8px;">Terms &amp; Conditions</div>
+      <div class="terms-text" th:text="${termsAndConditions}"></div>
+    </div>
+
+    <div class="terms-box" th:if="${notes != null and notes != ''}" style="margin-top:12px;">
+      <div class="section-title" style="margin-bottom:8px;">Notes</div>
+      <div class="terms-text" th:text="${notes}"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <a th:href="${baseUrl + '/contact'}">Accept &amp; Contact Us</a>
+    </div>
+    <p style="text-align:center; font-size:12px; color:#5C6B85; margin-top:12px;">
+      To accept this quotation or ask questions, simply reply to this email or call us.<br/>
+      This quotation is valid until <strong th:text="${validUntil}">—</strong>.
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>
+      <strong>Sierra Pure Mineral Water Pvt. Ltd.</strong><br/>
+      Industrial Area, Maharashtra, India · GSTIN: 27AAACS1234F1Z5<br/>
+      <a href="mailto:info@sierrapure.com" style="color:#1565C0;">info@sierrapure.com</a> · +91 98765 43210
+    </p>
+    <p style="margin-top:10px; font-size:10px; color:#aaa;">
+      This is a computer-generated quotation. Prices are subject to change after the validity date.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -104,7 +104,7 @@ export default function LabReportDetail() {
           </Button>
 
           <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                 <Chip
                   label={report.overallResult}
@@ -152,7 +152,7 @@ export default function LabReportDetail() {
             </Grid>
 
             {/* Action buttons */}
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Box sx={{ display: 'flex', flexDirection: { xs: 'row', md: 'column' }, gap: 1.5 }}>
                 <Button
                   fullWidth
@@ -202,7 +202,7 @@ export default function LabReportDetail() {
         <Container maxWidth="lg">
           <Grid container spacing={4}>
             {/* Parameters table */}
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Box
                   sx={{
@@ -353,7 +353,7 @@ export default function LabReportDetail() {
             </Grid>
 
             {/* Sidebar */}
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
                 {/* Lab Info */}
                 <Box

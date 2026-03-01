@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Enquiry Confirmation — Sierra Pure</title>
+</head>
+<body style="margin:0;padding:0;background-color:#EEF2F7;font-family:Inter,Arial,Helvetica,sans-serif">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#EEF2F7;padding:32px 16px">
+  <tr><td align="center">
+  <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%">
+
+    <!-- ══ HEADER ══ -->
+    <tr><td style="background:linear-gradient(135deg,#0A2342 0%,#1B6CA8 100%);border-radius:12px 12px 0 0">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding:32px 40px 12px">
+          <p style="margin:0;color:rgba(255,255,255,0.5);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600">PREMIUM MINERAL WATER</p>
+          <h1 style="margin:6px 0 0;color:white;font-size:28px;font-weight:800;letter-spacing:-0.5px">Sierra Pure</h1>
+        </td></tr>
+        <tr><td style="padding:0 40px">
+          <div style="width:48px;height:3px;background:#C9A84C;border-radius:2px;margin-bottom:24px"></div>
+        </td></tr>
+        <tr><td style="padding:0 40px 36px">
+          <h2 style="margin:0 0 10px;color:white;font-size:20px;font-weight:700">
+            Thank you, <span th:text="${name}">Customer</span>! &#128591;
+          </h2>
+          <p style="margin:0;color:rgba(255,255,255,0.75);font-size:14px;line-height:1.7">
+            We have received your enquiry and our team will reach out to you personally within
+            <strong style="color:#C9A84C">24 hours</strong>.
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+
+    <!-- ══ REFERENCE BADGE ══ -->
+    <tr><td style="background:#0A2342;padding:16px 40px">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <!-- Reference ID -->
+          <td width="33%" valign="top"
+              style="border-right:1px solid rgba(255,255,255,0.1);padding-right:20px">
+            <p style="margin:0 0 4px;font-size:10px;color:rgba(255,255,255,0.45);
+                      text-transform:uppercase;letter-spacing:1px;font-weight:600">Reference ID</p>
+            <p style="margin:0;font-size:16px;color:#C9A84C;font-weight:700;
+                      font-family:'Courier New',Courier,monospace;letter-spacing:1px"
+               th:text="'#' + ${refId}">#REF</p>
+          </td>
+          <!-- Received At -->
+          <td width="42%" valign="top"
+              style="border-right:1px solid rgba(255,255,255,0.1);padding:0 20px">
+            <p style="margin:0 0 4px;font-size:10px;color:rgba(255,255,255,0.45);
+                      text-transform:uppercase;letter-spacing:1px;font-weight:600">Received At</p>
+            <p style="margin:0;font-size:13px;color:white;font-weight:600"
+               th:text="${submittedAt}">—</p>
+          </td>
+          <!-- Status -->
+          <td width="25%" valign="top" style="padding-left:20px">
+            <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.45);
+                      text-transform:uppercase;letter-spacing:1px;font-weight:600">Status</p>
+            <span style="display:inline-block;background:rgba(46,204,113,0.18);
+                         color:#2ECC71;padding:4px 14px;border-radius:12px;
+                         font-size:12px;font-weight:700">&#10003; Received</span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- ══ ENQUIRY SUMMARY ══ -->
+    <tr><td style="background:#ffffff;padding:32px 40px 24px">
+      <h3 style="margin:0 0 14px;color:#0A2342;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px">Your Enquiry Summary</h3>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #E2EAF4;border-radius:8px;overflow:hidden;font-size:13px">
+        <tr style="background:#F8FBFF">
+          <td style="padding:10px 16px;color:#0A2342;font-weight:600;width:140px">Full Name</td>
+          <td style="padding:10px 16px;color:#5C6B85" th:text="${name}">—</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 16px;color:#0A2342;font-weight:600">Email</td>
+          <td style="padding:10px 16px;color:#5C6B85" th:text="${email}">—</td>
+        </tr>
+        <tr style="background:#F8FBFF">
+          <td style="padding:10px 16px;color:#0A2342;font-weight:600">Phone</td>
+          <td style="padding:10px 16px;color:#5C6B85" th:text="${phone}">—</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 16px;color:#0A2342;font-weight:600">Company</td>
+          <td style="padding:10px 16px;color:#5C6B85" th:text="${company}">—</td>
+        </tr>
+        <tr style="background:#F8FBFF">
+          <td style="padding:10px 16px;color:#0A2342;font-weight:600">Segment</td>
+          <td style="padding:10px 16px">
+            <span style="background:#1B6CA818;color:#1B6CA8;padding:3px 12px;border-radius:10px;font-weight:700"
+                  th:text="${segment}">—</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 16px;color:#0A2342;font-weight:600">Bottle Sizes</td>
+          <td style="padding:10px 16px;color:#5C6B85" th:text="${bottleSizes}">—</td>
+        </tr>
+        <tr style="background:#F8FBFF">
+          <td style="padding:10px 16px;color:#0A2342;font-weight:600">Custom Label</td>
+          <td style="padding:10px 16px;color:#5C6B85" th:text="${customLabel}">—</td>
+        </tr>
+        <!-- Customer message row — only shown when present -->
+        <tr th:if="${message != null and !#strings.isEmpty(message)}">
+          <td style="padding:10px 16px;color:#0A2342;font-weight:600;vertical-align:top">Your Message</td>
+          <td style="padding:10px 16px;color:#5C6B85;font-style:italic"
+              th:text="'&quot;' + ${message} + '&quot;'">—</td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- ══ WHAT HAPPENS NEXT ══ -->
+    <tr><td style="background:#ffffff;padding:0 40px 32px">
+      <h3 style="margin:0 0 16px;color:#0A2342;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px">What Happens Next?</h3>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td width="44" valign="top" style="padding-bottom:16px">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0A2342,#1B6CA8);text-align:center;line-height:36px;color:white;font-weight:700;font-size:14px">1</div>
+          </td>
+          <td valign="top" style="padding:6px 0 16px 10px">
+            <p style="margin:0;color:#0A2342;font-weight:700;font-size:14px">Enquiry Review</p>
+            <p style="margin:3px 0 0;color:#5C6B85;font-size:13px;line-height:1.6">Our team reviews your requirements and prepares a tailored proposal.</p>
+          </td>
+        </tr>
+        <tr>
+          <td width="44" valign="top" style="padding-bottom:16px">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1B6CA8,#4FC3F7);text-align:center;line-height:36px;color:white;font-weight:700;font-size:14px">2</div>
+          </td>
+          <td valign="top" style="padding:6px 0 16px 10px">
+            <p style="margin:0;color:#0A2342;font-weight:700;font-size:14px">Personal Callback — within 24 hrs</p>
+            <p style="margin:3px 0 0;color:#5C6B85;font-size:13px;line-height:1.6">A dedicated account manager will call or email you with pricing and details.</p>
+          </td>
+        </tr>
+        <tr>
+          <td width="44" valign="top">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#E8C96C);text-align:center;line-height:36px;color:white;font-weight:700;font-size:14px">3</div>
+          </td>
+          <td valign="top" style="padding:6px 0 0 10px">
+            <p style="margin:0;color:#0A2342;font-weight:700;font-size:14px">Custom Proposal and Samples</p>
+            <p style="margin:3px 0 0;color:#5C6B85;font-size:13px;line-height:1.6">Receive a detailed quote with sample bottles and label design options.</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- ══ PRODUCT HIGHLIGHTS ══ -->
+    <tr><td style="background:#F0F6FF;padding:24px 40px;border-top:1px solid #E2EAF4;border-bottom:1px solid #E2EAF4">
+      <p style="margin:0 0 14px;color:#0A2342;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px">Our Product Range</p>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td width="33%" align="center" style="padding:0 6px">
+            <div style="background:white;border-radius:8px;padding:14px 10px;border:1px solid #C8D8F0;text-align:center">
+              <p style="margin:0;font-size:22px">&#128167;</p>
+              <p style="margin:6px 0 2px;color:#0A2342;font-weight:700;font-size:13px">200 ml</p>
+              <p style="margin:0;color:#5C6B85;font-size:11px">Mini / Travel</p>
+            </div>
+          </td>
+          <td width="33%" align="center" style="padding:0 6px">
+            <div style="background:white;border-radius:8px;padding:14px 10px;border:2px solid #1B6CA8;text-align:center">
+              <p style="margin:0;font-size:22px">&#128167;</p>
+              <p style="margin:6px 0 2px;color:#0A2342;font-weight:700;font-size:13px">500 ml</p>
+              <p style="margin:0;color:#1B6CA8;font-size:11px;font-weight:600">Most Popular</p>
+            </div>
+          </td>
+          <td width="33%" align="center" style="padding:0 6px">
+            <div style="background:white;border-radius:8px;padding:14px 10px;border:1px solid #C8D8F0;text-align:center">
+              <p style="margin:0;font-size:22px">&#128167;</p>
+              <p style="margin:6px 0 2px;color:#0A2342;font-weight:700;font-size:13px">1000 ml</p>
+              <p style="margin:0;color:#5C6B85;font-size:11px">Premium / Hotel</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+      <p style="margin:14px 0 0;color:#5C6B85;font-size:12px;text-align:center">All sizes available with custom private label branding</p>
+    </td></tr>
+
+    <!-- ══ CTA BUTTONS ══ -->
+    <tr><td style="background:#ffffff;padding:28px 40px;text-align:center">
+      <a th:href="${baseUrl + '/lab-reports'}"
+         style="display:inline-block;background:linear-gradient(135deg,#0A2342,#1B6CA8);color:white;text-decoration:none;padding:13px 26px;border-radius:24px;font-weight:700;font-size:13px;margin:0 6px 10px">
+        View Lab Reports
+      </a>
+      <a th:href="${baseUrl + '/products'}"
+         style="display:inline-block;background:#F0F6FF;color:#1B6CA8;text-decoration:none;padding:13px 26px;border-radius:24px;font-weight:700;font-size:13px;margin:0 6px 10px;border:1.5px solid #C8D8F0">
+        Explore Products
+      </a>
+    </td></tr>
+
+    <!-- ══ QUALITY BADGES ══ -->
+    <tr><td style="background:#0A2342;padding:20px 40px">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="center" style="padding:0 6px">
+            <p style="margin:0;font-size:18px">&#127942;</p>
+            <p style="margin:5px 0 0;color:rgba(255,255,255,0.7);font-size:10px;font-weight:600;text-align:center">ISO Certified</p>
+          </td>
+          <td align="center" style="padding:0 6px">
+            <p style="margin:0;font-size:18px">&#128300;</p>
+            <p style="margin:5px 0 0;color:rgba(255,255,255,0.7);font-size:10px;font-weight:600;text-align:center">Lab Tested</p>
+          </td>
+          <td align="center" style="padding:0 6px">
+            <p style="margin:0;font-size:18px">&#127807;</p>
+            <p style="margin:5px 0 0;color:rgba(255,255,255,0.7);font-size:10px;font-weight:600;text-align:center">Pure Source</p>
+          </td>
+          <td align="center" style="padding:0 6px">
+            <p style="margin:0;font-size:18px">&#127912;</p>
+            <p style="margin:5px 0 0;color:rgba(255,255,255,0.7);font-size:10px;font-weight:600;text-align:center">Custom Label</p>
+          </td>
+          <td align="center" style="padding:0 6px">
+            <p style="margin:0;font-size:18px">&#128666;</p>
+            <p style="margin:5px 0 0;color:rgba(255,255,255,0.7);font-size:10px;font-weight:600;text-align:center">Pan India</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- ══ FOOTER ══ -->
+    <tr><td style="background:#071829;padding:24px 40px;border-radius:0 0 12px 12px">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <p style="margin:0 0 4px;color:rgba(255,255,255,0.9);font-weight:700;font-size:14px">Sierra Pure</p>
+            <p style="margin:0;color:rgba(255,255,255,0.4);font-size:12px;line-height:1.7">
+              Premium Mineral Water &middot; Private Label Specialists<br>
+              sierrapure.in &middot; support@sierrapure.in
+            </p>
+          </td>
+          <td align="right" valign="top">
+            <p style="margin:0;color:rgba(255,255,255,0.3);font-size:11px;line-height:1.8;text-align:right">
+              Automated confirmation — do not reply<br>
+              Ref: <span th:text="'#' + ${refId}">REF</span><br>
+              &copy; 2026 Sierra Pure. All rights reserved.
+            </p>
+          </td>
+        </tr>
+      </table>
+      <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.07);padding-top:12px;text-align:center">
+        <p style="margin:0;color:rgba(255,255,255,0.18);font-size:10px;letter-spacing:2px;text-transform:uppercase">Purity You Can Trust</p>
+      </div>
+    </td></tr>
+
+  </table>
+  </td></tr>
+</table>
+</body>
+</html>

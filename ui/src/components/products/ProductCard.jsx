@@ -6,6 +6,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import bottle200 from '../../assets/images/bottle-200ml.svg';
 import bottle500 from '../../assets/images/bottle-500ml.svg';
 import bottle1000 from '../../assets/images/bottle-1000ml.svg';
+import { MineralProfileCompact } from '../common/MineralProfile';
 
 const BOTTLE_IMAGES = { '200ml': bottle200, '500ml': bottle500, '1000ml': bottle1000 };
 const SIZE_COLORS   = { '200ml': '#42A5F5', '500ml': '#1565C0', '1000ml': '#C9A84C' };
@@ -66,7 +67,7 @@ export default function ProductCard({ product, index = 0 }) {
 
           {/* Features */}
           {product.features?.length > 0 && (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mb: 2 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mb: 1.5 }}>
               {product.features.slice(0, 3).map((f) => (
                 <Box key={f} sx={{ display: 'flex', alignItems: 'center', gap: 0.4, fontSize: '0.72rem', color: '#1B6CA8', fontWeight: 600 }}>
                   <VerifiedIcon sx={{ fontSize: 11, color }} />
@@ -75,6 +76,9 @@ export default function ProductCard({ product, index = 0 }) {
               ))}
             </Box>
           )}
+
+          {/* Mineral profile mini chips */}
+          <MineralProfileCompact size={product.size} />
 
           {product.priceRange && (
             <Typography sx={{ fontWeight: 700, color: '#0A2342', mb: 2, fontSize: '0.9rem' }}>

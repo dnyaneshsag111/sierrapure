@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final RateLimitFilter rateLimitFilter;
     private final CorsConfig corsConfig;
 
     @Bean
@@ -39,6 +40,14 @@ public class SecurityConfig {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
 
+                // ── Swagger UI & OpenAPI spec (dev tool — disable in prod if needed) ──
+                .requestMatchers(
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/v3/api-docs"
+                ).permitAll()
+
                 // ── Public GET endpoints ───────────────────────────────
                 .requestMatchers(HttpMethod.GET,
                         "/api/v1/products/**",
@@ -52,7 +61,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,
                         "/api/v1/contact",
                         "/api/v1/auth/login",
-                        "/api/v1/auth/register"
+                        "/api/v1/auth/register",
+                        "/api/v1/auth/refresh",
+                        "/api/v1/auth/logout",
+                        "/api/v1/auth/forgot-password",
+                        "/api/v1/auth/reset-password"
                 ).permitAll()
 
                 // ── Lab Analyst: create/edit lab reports ──────────────
@@ -87,6 +100,7 @@ public class SecurityConfig {
                     response.getWriter().write("{\"success\":false,\"message\":\"Authentication required\"}");
                 })
             )
+            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

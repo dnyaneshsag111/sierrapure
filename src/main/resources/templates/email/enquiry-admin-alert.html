@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>New Enquiry Alert — Sierra Pure Admin</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:Inter,Arial,Helvetica,sans-serif">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:24px 16px">
+  <tr><td align="center">
+  <table width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2eaf4">
+
+    <!-- ══ URGENCY BANNER ══ -->
+    <tr><td style="background:#E74C3C;padding:12px 32px;text-align:center">
+      <p style="margin:0;color:white;font-weight:700;font-size:14px;letter-spacing:0.5px">
+        &#128276; NEW ENQUIRY RECEIVED — ACTION REQUIRED
+      </p>
+    </td></tr>
+
+    <!-- ══ HEADER ══ -->
+    <tr><td style="background:linear-gradient(135deg,#0A2342,#1B6CA8);padding:28px 40px">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <h1 style="color:white;margin:0;font-size:22px;font-weight:700">Sierra Pure</h1>
+            <p style="color:rgba(255,255,255,0.65);margin:4px 0 0;font-size:13px">Admin Notification — New Business Enquiry</p>
+          </td>
+          <td align="right" valign="middle">
+            <span style="background:rgba(255,255,255,0.15);color:white;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600"
+                  th:text="${receivedAt}">—</span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- ══ QUICK SUMMARY STRIP ══ -->
+    <tr><td style="background:#F0F6FF;padding:14px 40px;border-bottom:1px solid #C8D8F0">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="font-size:13px;color:#0A2342">
+            <strong>From:</strong>
+            <span th:text="${name}">—</span>
+            (<span th:text="${email}">—</span>)
+          </td>
+          <td style="font-size:13px;color:#0A2342;text-align:right">
+            <strong>Segment:</strong>
+            <span th:text="${segment}">—</span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- ══ FULL DETAILS TABLE ══ -->
+    <tr><td style="padding:32px 40px 24px">
+      <h3 style="color:#0A2342;margin:0 0 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Enquiry Details</h3>
+      <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;border:1px solid #E2EAF4;border-radius:8px;overflow:hidden">
+        <tr style="background:#F8FBFF">
+          <td style="padding:10px 14px;color:#0A2342;font-weight:600;width:150px">Full Name</td>
+          <td style="padding:10px 14px;color:#3D5A80" th:text="${name}">—</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 14px;color:#0A2342;font-weight:600">Email</td>
+          <td style="padding:10px 14px">
+            <a th:href="'mailto:' + ${email}" th:text="${email}"
+               style="color:#1B6CA8;text-decoration:none">—</a>
+          </td>
+        </tr>
+        <tr style="background:#F8FBFF">
+          <td style="padding:10px 14px;color:#0A2342;font-weight:600">Phone</td>
+          <td style="padding:10px 14px;color:#3D5A80" th:text="${phone}">—</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 14px;color:#0A2342;font-weight:600">Company</td>
+          <td style="padding:10px 14px;color:#3D5A80" th:text="${company}">—</td>
+        </tr>
+        <tr style="background:#F8FBFF">
+          <td style="padding:10px 14px;color:#0A2342;font-weight:600">Segment</td>
+          <td style="padding:10px 14px">
+            <span style="background:#1B6CA818;color:#1B6CA8;padding:3px 10px;border-radius:12px;font-weight:700;font-size:13px"
+                  th:text="${segment}">—</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 14px;color:#0A2342;font-weight:600">Bottle Sizes</td>
+          <td style="padding:10px 14px;color:#3D5A80" th:text="${bottleSizes}">—</td>
+        </tr>
+        <tr style="background:#F8FBFF">
+          <td style="padding:10px 14px;color:#0A2342;font-weight:600">Custom Label</td>
+          <td style="padding:10px 14px;color:#3D5A80" th:text="${customLabel}">—</td>
+        </tr>
+      </table>
+
+      <!-- Customer message — only shown when present -->
+      <div th:if="${message != null and !#strings.isEmpty(message)}"
+           style="margin-top:20px;background:#FFF8E1;border-left:4px solid #C9A84C;border-radius:4px;padding:16px 20px">
+        <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#0A2342;text-transform:uppercase;letter-spacing:0.5px">Message from Customer</p>
+        <p style="margin:0;color:#5C6B85;line-height:1.7;font-size:14px" th:text="${message}">—</p>
+      </div>
+
+      <!-- ══ CTA BUTTONS ══ -->
+      <div style="margin-top:28px">
+        <a th:href="${baseUrl + '/admin/enquiries'}"
+           style="background:linear-gradient(135deg,#0A2342,#1B6CA8);color:white;padding:13px 24px;border-radius:24px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block;margin-right:12px">
+          View in Admin Panel &#8594;
+        </a>
+        <a th:href="'mailto:' + ${email} + '?subject=Re: Your enquiry to Sierra Pure'"
+           style="background:#F0F6FF;color:#1B6CA8;padding:13px 24px;border-radius:24px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block;border:1px solid #C8D8F0">
+          Reply to Customer &#9993;
+        </a>
+      </div>
+    </td></tr>
+
+    <!-- ══ FOOTER ══ -->
+    <tr><td style="background:#F8FBFF;padding:16px 40px;border-top:1px solid #e2eaf4;text-align:center">
+      <p style="margin:0;color:#9BADB7;font-size:12px">
+        Sierra Pure Admin System &middot; Received at <span th:text="${receivedAt}">—</span> &middot; Do not reply to this automated email
+      </p>
+    </td></tr>
+
+  </table>
+  </td></tr>
+</table>
+</body>
+</html>

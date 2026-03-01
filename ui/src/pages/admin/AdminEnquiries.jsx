@@ -3,14 +3,16 @@ import {
   Box, Typography, Card, Chip, TextField, Button, Select,
   MenuItem, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, IconButton, Tooltip, Collapse,
-  Divider, Grid,
+  Divider, Grid, TablePagination, Dialog,
 } from '@mui/material';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import api from '../../services/api';
 import { formatDate } from '../../utils/formatDate';
 import { SEGMENTS, ENQUIRY_STATUS } from '../../utils/constants';
+import QuotationBuilder from '../../components/admin/QuotationBuilder';
 
 const STATUS_STYLES = {
   new:       { bg: '#EEF4FF', color: '#1565C0', label: 'NEW' },
@@ -18,7 +20,7 @@ const STATUS_STYLES = {
   closed:    { bg: '#EDFBF0', color: '#1a8a4a', label: 'CLOSED' },
 };
 
-function EnquiryRow({ enquiry }) {
+function EnquiryRow({ enquiry, onCreateQuote }) {
   const [open, setOpen] = useState(false);
   const qc = useQueryClient();
   const style = STATUS_STYLES[enquiry.status] ?? STATUS_STYLES.new;
@@ -82,6 +84,19 @@ function EnquiryRow({ enquiry }) {
                     <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                       Submitted: {formatDate(enquiry.createdAt, 'DD MMM YYYY, hh:mm A')}
                     </Typography>
+                    <Divider />
+                    <Button
+                      size="small" variant="contained"
+                      startIcon={<RequestQuoteIcon sx={{ fontSize: 16 }} />}
+                      onClick={(e) => { e.stopPropagation(); onCreateQuote(enquiry); }}
+                      sx={{
+                        mt: 0.5, borderRadius: 9999, fontWeight: 700, fontSize: '0.78rem',
+                        background: 'linear-gradient(135deg, #0A2342, #1565C0)',
+                        boxShadow: '0 4px 12px rgba(10,35,66,0.2)',
+                      }}
+                    >
+                      Create Quotation
+                    </Button>
                   </Box>
                 </Grid>
               </Grid>
@@ -96,6 +111,12 @@ function EnquiryRow({ enquiry }) {
 export default function AdminEnquiries() {
   const [statusFilter, setStatusFilter] = useState('');
   const [search, setSearch] = useState('');
+  const [page, setPage]     = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [builderOpen, setBuilderOpen] = useState(false);
+  const [enquiryCtx, setEnquiryCtx]   = useState(null);
+
+  const qc = useQueryClient();
 
   const { data: enquiries = [], isLoading } = useQuery({
     queryKey: ['admin-enquiries'],
@@ -108,8 +129,15 @@ export default function AdminEnquiries() {
     return matchStatus && matchSearch;
   });
 
+  const paged = filtered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
   const counts = { new: 0, contacted: 0, closed: 0 };
   enquiries.forEach(e => { if (counts[e.status] !== undefined) counts[e.status]++; });
+
+  const handleCreateQuote = (enquiry) => {
+    setEnquiryCtx(enquiry);
+    setBuilderOpen(true);
+  };
 
   return (
     <Box>
@@ -132,7 +160,7 @@ export default function AdminEnquiries() {
 
       {/* Search */}
       <TextField size="small" placeholder="Search by name, email, company, segment..."
-        value={search} onChange={e => setSearch(e.target.value)}
+        value={search} onChange={e => { setSearch(e.target.value); setPage(0); }}
         sx={{ mb: 2.5, width: { xs: '100%', sm: 380 }, '& .MuiOutlinedInput-root': { borderRadius: 9999 } }} />
 
       <Card sx={{ borderRadius: 3, border: '1px solid #E2EAF4', overflow: 'hidden' }}>
@@ -148,14 +176,34 @@ export default function AdminEnquiries() {
             <TableBody>
               {isLoading
                 ? <TableRow><TableCell colSpan={8} sx={{ textAlign: 'center', py: 5, color: 'var(--text-muted)' }}>Loading...</TableCell></TableRow>
-                : filtered.length === 0
+                : paged.length === 0
                   ? <TableRow><TableCell colSpan={8} sx={{ textAlign: 'center', py: 5, color: 'var(--text-muted)' }}>No enquiries found.</TableCell></TableRow>
-                  : filtered.map(e => <EnquiryRow key={e.id} enquiry={e} />)
+                  : paged.map(e => <EnquiryRow key={e.id} enquiry={e} onCreateQuote={handleCreateQuote} />)
               }
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          component="div"
+          count={filtered.length}
+          page={page}
+          onPageChange={(_, p) => setPage(p)}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={e => { setRowsPerPage(+e.target.value); setPage(0); }}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          sx={{ borderTop: '1px solid #E2EAF4', fontSize: '0.78rem' }}
+        />
       </Card>
+
+      {/* Quotation Builder — pre-filled from enquiry */}
+      <Dialog open={builderOpen} onClose={() => setBuilderOpen(false)} maxWidth="md" fullWidth
+        PaperProps={{ sx: { borderRadius: 4, maxHeight: '96vh' } }}>
+        <QuotationBuilder
+          enquiryContext={enquiryCtx}
+          onClose={() => setBuilderOpen(false)}
+          onSaved={() => { setBuilderOpen(false); qc.invalidateQueries(['admin-quotations']); }}
+        />
+      </Dialog>
     </Box>
   );
 }

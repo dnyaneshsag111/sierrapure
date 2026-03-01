@@ -49,3 +49,12 @@ ui/node_modules/
 ui/dist/
 ui/.env.local
 
+### Sierra Pure Runtime ###
+# Script-generated files — never commit these
+logs/
+.pids
+target/
+
+### macOS ###
+.DS_Store
+

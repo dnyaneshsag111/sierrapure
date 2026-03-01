@@ -2,6 +2,7 @@ package com.mineralwater.sierrapure.controller;
 
 import com.google.zxing.WriterException;
 import com.mineralwater.sierrapure.service.QRCodeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import java.io.IOException;
 @RequestMapping("/api/v1/qr")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "QR Codes", description = "Generate QR code PNG images linking to lab report pages")
 public class QRCodeController {
 
     private final QRCodeService qrCodeService;

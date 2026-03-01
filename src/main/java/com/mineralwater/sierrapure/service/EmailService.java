@@ -1,106 +1,137 @@
 package com.mineralwater.sierrapure.service;
 
 import com.mineralwater.sierrapure.model.ContactRequest;
+import com.mineralwater.sierrapure.model.Quotation;
 import com.mineralwater.sierrapure.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import jakarta.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
 
-    @Value("${app.mail.from:noreply@sierrapure.in}")
+    /** Null-safe: absent when spring.mail.* is not configured */
+    @Autowired(required = false)
+    private JavaMailSender mailSender;
+
+    @Value("${app.mail.from:dnyaneshsag@gmail.com}")
     private String fromEmail;
 
-    @Value("${app.mail.admin:admin@sierrapure.in}")
+    @Value("${app.mail.admin:dnyaneshsag@gmail.com}")
     private String adminEmail;
 
     @Value("${app.base.url:http://localhost:5173}")
     private String baseUrl;
 
-    // ── Public facing ─────────────────────────────────────────────────
+    /**
+     * true  → print rendered email to console (no SMTP needed — dev/CI mode).
+     * false → send via JavaMailSender (production).
+     * Override via env var: MAIL_TEST_MODE=true
+     */
+    @Value("${app.mail.test-mode:false}")
+    private boolean testMode;
 
-    /** Sent to the customer who submitted the contact form */
+    private static final DateTimeFormatter DT_FMT =
+            DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a");
+
+    // ─────────────────────────────────────────────────────────────────
+    //  Public API
+    // ─────────────────────────────────────────────────────────────────
+
+    /**
+     * Premium auto-reply sent to the customer the moment an enquiry is submitted.
+     * Template: email/enquiry-confirmation.html
+     */
     @Async
     public void sendEnquiryConfirmation(ContactRequest enquiry) {
-        String subject = "Thank you for contacting Sierra Pure — " + enquiry.getName();
-        String html = """
-            <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2eaf4">
-              <div style="background:linear-gradient(135deg,#0A2342,#1B6CA8);padding:32px 40px">
-                <h1 style="color:white;margin:0;font-size:24px">Sierra Pure</h1>
-                <p style="color:rgba(255,255,255,0.75);margin:6px 0 0">Premium Mineral Water</p>
-              </div>
-              <div style="padding:40px">
-                <h2 style="color:#0A2342;margin-top:0">Thank you, %s!</h2>
-                <p style="color:#5C6B85;line-height:1.7">We have received your enquiry and our team will get back to you within <strong>24 hours</strong>.</p>
-                <div style="background:#F8FBFF;border-radius:8px;padding:20px;margin:24px 0;border-left:4px solid #1B6CA8">
-                  <p style="margin:0;color:#0A2342"><strong>Your Enquiry Summary:</strong></p>
-                  <p style="margin:8px 0 0;color:#5C6B85">Segment: %s | Bottle Sizes: %s | Custom Label: %s</p>
-                </div>
-                <p style="color:#5C6B85;line-height:1.7">Meanwhile, you can browse our <a href="%s/lab-reports" style="color:#1B6CA8">latest lab reports</a> or explore our <a href="%s/products" style="color:#1B6CA8">product range</a>.</p>
-                <p style="color:#5C6B85">Best regards,<br><strong>Sierra Pure Team</strong></p>
-              </div>
-              <div style="background:#F8FBFF;padding:20px 40px;text-align:center;border-top:1px solid #e2eaf4">
-                <p style="margin:0;color:#9BADB7;font-size:12px">Sierra Pure | Purity You Can Trust | sierrapure.in</p>
-              </div>
-            </div>
-            """.formatted(
-                enquiry.getName(),
-                enquiry.getSegment(),
-                enquiry.getBottleSizes() != null ? String.join(", ", enquiry.getBottleSizes()) : "—",
-                enquiry.isCustomLabel() ? "Yes" : "No",
-                baseUrl, baseUrl
-        );
+        String subject = "We received your enquiry, " + enquiry.getName()
+                + " \u2014 Sierra Pure will be in touch within 24 hrs";
+
+        String refId = enquiry.getId() != null
+                ? enquiry.getId().substring(0, Math.min(8, enquiry.getId().length())).toUpperCase()
+                : "N/A";
+
+        Context ctx = new Context();
+        ctx.setVariable("name",        enquiry.getName());
+        ctx.setVariable("email",       enquiry.getEmail());
+        ctx.setVariable("phone",       nullSafe(enquiry.getPhone(),   "Not provided"));
+        ctx.setVariable("company",     nullSafe(enquiry.getCompany(), "Not provided"));
+        ctx.setVariable("segment",     capitalise(enquiry.getSegment()));
+        ctx.setVariable("bottleSizes", joinSizes(enquiry));
+        ctx.setVariable("customLabel", enquiry.isCustomLabel() ? "Yes \u2014 Custom label required" : "No");
+        ctx.setVariable("message",     enquiry.getMessage());
+        ctx.setVariable("refId",       refId);
+        ctx.setVariable("submittedAt", LocalDateTime.now().format(DT_FMT));
+        ctx.setVariable("baseUrl",     baseUrl);
+
+        String html = templateEngine.process("email/enquiry-confirmation", ctx);
         send(enquiry.getEmail(), subject, html);
     }
 
-    /** Sent to admin when a new enquiry comes in */
+    /**
+     * Rich admin notification with urgency banner, full details, Reply-To set to customer.
+     * Template: email/enquiry-admin-alert.html
+     */
     @Async
     public void sendNewEnquiryAlert(ContactRequest enquiry) {
-        String subject = "🔔 New Enquiry from " + enquiry.getName() + " [" + enquiry.getSegment() + "]";
-        String html = """
-            <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto">
-              <div style="background:#0A2342;padding:24px 32px">
-                <h2 style="color:white;margin:0;font-size:18px">New Enquiry Received</h2>
-              </div>
-              <div style="padding:32px;background:#fff;border:1px solid #e2eaf4">
-                <table style="width:100%;border-collapse:collapse">
-                  <tr><td style="padding:8px;color:#0A2342;font-weight:bold;width:140px">Name</td><td style="padding:8px;color:#5C6B85">%s</td></tr>
-                  <tr style="background:#F8FBFF"><td style="padding:8px;color:#0A2342;font-weight:bold">Email</td><td style="padding:8px;color:#5C6B85">%s</td></tr>
-                  <tr><td style="padding:8px;color:#0A2342;font-weight:bold">Phone</td><td style="padding:8px;color:#5C6B85">%s</td></tr>
-                  <tr style="background:#F8FBFF"><td style="padding:8px;color:#0A2342;font-weight:bold">Company</td><td style="padding:8px;color:#5C6B85">%s</td></tr>
-                  <tr><td style="padding:8px;color:#0A2342;font-weight:bold">Segment</td><td style="padding:8px;color:#5C6B85">%s</td></tr>
-                  <tr style="background:#F8FBFF"><td style="padding:8px;color:#0A2342;font-weight:bold">Bottle Sizes</td><td style="padding:8px;color:#5C6B85">%s</td></tr>
-                  <tr><td style="padding:8px;color:#0A2342;font-weight:bold">Custom Label</td><td style="padding:8px;color:#5C6B85">%s</td></tr>
-                  <tr style="background:#F8FBFF"><td style="padding:8px;color:#0A2342;font-weight:bold">Message</td><td style="padding:8px;color:#5C6B85">%s</td></tr>
-                </table>
-                <div style="margin-top:24px">
-                  <a href="%s/admin/enquiries" style="background:#1B6CA8;color:white;padding:12px 24px;border-radius:24px;text-decoration:none;font-weight:600">View in Admin Panel →</a>
-                </div>
-              </div>
-            </div>
-            """.formatted(
-                enquiry.getName(), enquiry.getEmail(), enquiry.getPhone(),
-                enquiry.getCompany(), enquiry.getSegment(),
-                enquiry.getBottleSizes() != null ? String.join(", ", enquiry.getBottleSizes()) : "—",
-                enquiry.isCustomLabel() ? "Yes" : "No",
-                enquiry.getMessage(),
-                baseUrl
-        );
-        send(adminEmail, subject, html);
+        String companyOrSegment = (enquiry.getCompany() != null && !enquiry.getCompany().isBlank())
+                ? enquiry.getCompany() : enquiry.getSegment();
+        String subject = "[NEW ENQUIRY] " + enquiry.getName()
+                + " \u2014 " + companyOrSegment
+                + " [" + (enquiry.getSegment() != null ? enquiry.getSegment().toUpperCase() : "") + "]";
+
+        Context ctx = new Context();
+        ctx.setVariable("name",        enquiry.getName());
+        ctx.setVariable("email",       enquiry.getEmail());
+        ctx.setVariable("phone",       nullSafe(enquiry.getPhone(),   "\u2014"));
+        ctx.setVariable("company",     nullSafe(enquiry.getCompany(), "\u2014"));
+        ctx.setVariable("segment",     enquiry.getSegment() != null ? enquiry.getSegment().toUpperCase() : "\u2014");
+        ctx.setVariable("bottleSizes", joinSizes(enquiry));
+        ctx.setVariable("customLabel", enquiry.isCustomLabel() ? "Yes" : "No");
+        ctx.setVariable("message",     enquiry.getMessage());
+        ctx.setVariable("receivedAt",  LocalDateTime.now().format(DT_FMT));
+        ctx.setVariable("baseUrl",     baseUrl);
+
+        String html = templateEngine.process("email/enquiry-admin-alert", ctx);
+        sendWithReplyTo(adminEmail, subject, html, enquiry.getEmail());
     }
 
-    /** Welcome email for new registered users */
+    /**
+     * 6-digit OTP email for password reset — valid 15 minutes.
+     * Template: email/password-reset-otp.html
+     */
+    @Async
+    public void sendPasswordResetOtp(User user, String otp) {
+        String subject = "Sierra Pure \u2014 Password Reset OTP";
+
+        Context ctx = new Context();
+        ctx.setVariable("name",   user.getName());
+        ctx.setVariable("otp",    otp);
+        ctx.setVariable("expiry", LocalDateTime.now().plusMinutes(15).format(DT_FMT));
+
+        String html = templateEngine.process("email/password-reset-otp", ctx);
+        send(user.getEmail(), subject, html);
+    }
+
+    /**
+     * Welcome email for newly created accounts.
+     * Template: email/welcome.html
+     */
     @Async
     public void sendWelcomeEmail(User user) {
         String roleName = switch (user.getRole()) {
@@ -108,36 +139,134 @@ public class EmailService {
             case "LAB_ANALYST" -> "Lab Analyst";
             default            -> "Client";
         };
-        String subject = "Welcome to Sierra Pure — Your account is ready";
-        String html = """
-            <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2eaf4">
-              <div style="background:linear-gradient(135deg,#0A2342,#1B6CA8);padding:32px 40px">
-                <h1 style="color:white;margin:0">Welcome to Sierra Pure</h1>
-              </div>
-              <div style="padding:40px">
-                <h2 style="color:#0A2342;margin-top:0">Hello, %s! 👋</h2>
-                <p style="color:#5C6B85;line-height:1.7">Your account has been created with role: <strong>%s</strong></p>
-                <a href="%s/admin" style="background:linear-gradient(135deg,#0A2342,#1B6CA8);color:white;padding:14px 28px;border-radius:24px;text-decoration:none;font-weight:600;display:inline-block;margin-top:8px">Access Portal →</a>
-              </div>
-            </div>
-            """.formatted(user.getName(), roleName, baseUrl);
+        String subject = "Welcome to Sierra Pure \u2014 Your account is ready";
+
+        Context ctx = new Context();
+        ctx.setVariable("name",     user.getName());
+        ctx.setVariable("email",    user.getEmail());
+        ctx.setVariable("role",     user.getRole());
+        ctx.setVariable("roleName", roleName);
+        ctx.setVariable("baseUrl",  baseUrl);
+
+        String html = templateEngine.process("email/welcome", ctx);
         send(user.getEmail(), subject, html);
     }
 
-    // ── Internal helper ───────────────────────────────────────────────
+    /**
+     * Sends a formatted quotation email to the client.
+     * Template: email/quotation.html
+     */
+    @Async
+    public void sendQuotationEmail(Quotation q) {
+        if (q.getClientEmail() == null || q.getClientEmail().isBlank()) {
+            log.warn("[EMAIL] Quotation {} has no client email — skipping send", q.getQuotationNumber());
+            return;
+        }
+        String subject = "Your Quotation from Sierra Pure — " + q.getQuotationNumber();
 
-    private void send(String to, String subject, String htmlBody) {
+        Context ctx = new Context();
+        ctx.setVariable("quotationNumber", q.getQuotationNumber());
+        ctx.setVariable("clientName",      q.getClientName());
+        ctx.setVariable("clientCompany",   nullSafe(q.getClientCompany(), ""));
+        ctx.setVariable("items",           q.getItems());
+        ctx.setVariable("subtotal",        formatAmount(q.getSubtotal()));
+        ctx.setVariable("discount",        q.getDiscount() != null ? q.getDiscount().toPlainString() : "0");
+        ctx.setVariable("discountAmount",  formatAmount(q.getDiscountAmount()));
+        ctx.setVariable("gstPercent",      q.getGstPercent() != null ? q.getGstPercent().toPlainString() : "18");
+        ctx.setVariable("gstAmount",       formatAmount(q.getGstAmount()));
+        ctx.setVariable("totalAmount",     formatAmount(q.getTotalAmount()));
+        ctx.setVariable("validUntil",      q.getValidUntil() != null ? q.getValidUntil().toString() : "—");
+        ctx.setVariable("termsAndConditions", nullSafe(q.getTermsAndConditions(), ""));
+        ctx.setVariable("notes",           nullSafe(q.getNotes(), ""));
+        ctx.setVariable("baseUrl",         baseUrl);
+        ctx.setVariable("createdAt",       LocalDateTime.now().format(DT_FMT));
+
+        String html = templateEngine.process("email/quotation", ctx);
+        send(q.getClientEmail(), subject, html);
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    //  Internal helpers
+    // ─────────────────────────────────────────────────────────────────
+
+    /** Delegates to sendWithReplyTo with no Reply-To header. */
+    private void send(String to, String subject, String html) {
+        sendWithReplyTo(to, subject, html, null);
+    }
+
+    /**
+     * Central dispatch.
+     * <ul>
+     *   <li>testMode=true  → pretty-print to console, no SMTP.</li>
+     *   <li>testMode=false → send via JavaMailSender; warn loudly if unconfigured.</li>
+     * </ul>
+     */
+    private void sendWithReplyTo(String to, String subject, String html, String replyTo) {
+        if (testMode) {
+            logEmail(to, subject, html);
+            return;
+        }
+        if (mailSender == null) {
+            log.warn("[EMAIL] JavaMailSender not configured. "
+                    + "Set app.mail.test-mode=true or configure spring.mail.* "
+                    + "to send real emails. Skipped: to={} subject={}", to, subject);
+            return;
+        }
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(fromEmail, "Sierra Pure");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(htmlBody, true);
+            helper.setText(html, true);
+            if (replyTo != null && !replyTo.isBlank()) {
+                helper.setReplyTo(replyTo);
+            }
             mailSender.send(message);
-            log.info("Email sent to {} | Subject: {}", to, subject);
+            log.info("[EMAIL] Sent  to={} subject={}", to, subject);
         } catch (Exception e) {
-            log.error("Failed to send email to {}: {}", to, e.getMessage());
+            log.error("[EMAIL] Failed to={} subject={} error={}", to, subject, e.getMessage());
         }
+    }
+
+    /** Strips HTML tags and prints a clean preview when testMode is on. */
+    private void logEmail(String to, String subject, String html) {
+        String plain = html
+                .replaceAll("<[^>]+>", " ")
+                .replaceAll("&nbsp;",  " ")
+                .replaceAll("&amp;",   "&")
+                .replaceAll("&lt;",    "<")
+                .replaceAll("&gt;",    ">")
+                .replaceAll("&middot;","·")
+                .replaceAll("&copy;",  "©")
+                .replaceAll("[ \t]{2,}", " ")
+                .replaceAll("(\r?\n){3,}", "\n\n")
+                .strip();
+
+        String sep = "=".repeat(62);
+        log.info("\n{}\n  [EMAIL TEST MODE — NOT SENT]\n  To      : {}\n  From    : {}\n  Subject : {}\n{}\n{}\n{}",
+                sep, to, fromEmail, subject, sep, plain, sep);
+    }
+
+    // ── tiny utilities ────────────────────────────────────────────────
+
+    private String nullSafe(String value, String fallback) {
+        return (value != null && !value.isBlank()) ? value : fallback;
+    }
+
+    private String formatAmount(java.math.BigDecimal v) {
+        if (v == null) return "0.00";
+        return String.format("%.2f", v);
+    }
+
+    private String capitalise(String s) {
+        if (s == null || s.isBlank()) return "\u2014";
+        return Character.toUpperCase(s.charAt(0)) + s.substring(1).toLowerCase();
+    }
+
+    private String joinSizes(ContactRequest e) {
+        return (e.getBottleSizes() != null && !e.getBottleSizes().isEmpty())
+                ? String.join(", ", e.getBottleSizes())
+                : "Not specified";
     }
 }

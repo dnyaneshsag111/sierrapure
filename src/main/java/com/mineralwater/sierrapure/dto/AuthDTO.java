@@ -36,17 +36,56 @@ public class AuthDTO {
         private String newPassword;
     }
 
+    /** Used by PUT /auth/users/{id} — admin editing a user */
+    @Data
+    public static class UpdateUserRequest {
+        private String name;
+        private String phone;
+        private String role;
+        private Boolean isActive;
+        /** Optional — if provided, resets the user's password */
+        @Size(min = 8, message = "Password must be at least 8 characters")
+        private String newPassword;
+    }
+
+    /** Used by /auth/refresh */
+    @Data
+    public static class RefreshRequest {
+        @NotBlank
+        private String refreshToken;
+    }
+
+    /** Used by /auth/forgot-password */
+    @Data
+    public static class ForgotPasswordRequest {
+        @Email @NotBlank
+        private String email;
+    }
+
+    /** Used by /auth/reset-password */
+    @Data
+    public static class ResetPasswordRequest {
+        @Email @NotBlank
+        private String email;
+        @NotBlank
+        private String otp;
+        @NotBlank @Size(min = 8, message = "Password must be at least 8 characters")
+        private String newPassword;
+    }
+
     @Data
     public static class TokenResponse {
         private String accessToken;
+        private String refreshToken;
         private String tokenType = "Bearer";
         private long expiresIn;
         private UserInfo user;
 
-        public TokenResponse(String accessToken, long expiresIn, UserInfo user) {
-            this.accessToken = accessToken;
-            this.expiresIn   = expiresIn;
-            this.user        = user;
+        public TokenResponse(String accessToken, String refreshToken, long expiresIn, UserInfo user) {
+            this.accessToken  = accessToken;
+            this.refreshToken = refreshToken;
+            this.expiresIn    = expiresIn;
+            this.user         = user;
         }
     }
 
@@ -62,3 +101,5 @@ public class AuthDTO {
         private boolean isActive;
     }
 }
+
+

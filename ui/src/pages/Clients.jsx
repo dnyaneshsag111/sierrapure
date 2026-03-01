@@ -14,7 +14,7 @@ const ALL_TABS = [{ value: '', label: 'All', icon: '🌐' }, ...SEGMENTS];
 
 function ClientCardSkeleton() {
   return (
-    <Grid item xs={12} sm={6} lg={4}>
+    <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
       <Box sx={{ borderRadius: 4, border: '1px solid #E2EAF4', p: 3 }}>
         <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
           <Skeleton variant="circular" width={56} height={56} />
@@ -183,14 +183,14 @@ export default function Clients() {
               ? [1, 2, 3, 4, 5, 6].map((i) => <ClientCardSkeleton key={i} />)
               : clients.length === 0
                 ? (
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Box sx={{ textAlign: 'center', py: 10 }}>
                       <Typography sx={{ color: 'var(--text-muted)' }}>No clients found for this segment.</Typography>
                     </Box>
                   </Grid>
                 )
                 : clients.map((client, i) => (
-                  <Grid item xs={12} sm={6} lg={4} key={client.id}>
+                  <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={client.id}>
                     <ClientCard client={client} index={i} />
                   </Grid>
                 ))

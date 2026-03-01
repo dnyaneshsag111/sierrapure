@@ -10,6 +10,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,6 +24,10 @@ public class UserService {
     private final JwtService jwtService;
     private final EmailService emailService;
 
+    private static final int OTP_EXPIRY_MINUTES = 15;
+
+    // ── Login ─────────────────────────────────────────────────────────
+
     public AuthDTO.TokenResponse login(AuthDTO.LoginRequest req) {
         User user = userRepository.findByEmail(req.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
@@ -32,15 +38,11 @@ public class UserService {
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword()))
             throw new BadCredentialsException("Invalid email or password");
 
-        String token = jwtService.generateToken(user);
         log.info("User logged in: {} ({})", user.getEmail(), user.getRole());
-
-        return new AuthDTO.TokenResponse(
-                token,
-                jwtService.getExpirationMs(),
-                toUserInfo(user)
-        );
+        return issueTokenPair(user);
     }
+
+    // ── Register ──────────────────────────────────────────────────────
 
     public AuthDTO.TokenResponse register(AuthDTO.RegisterRequest req, String createdByRole) {
         if (userRepository.existsByEmail(req.getEmail()))
@@ -66,16 +68,92 @@ public class UserService {
         User saved = userRepository.save(user);
         log.info("New user registered: {} role={}", saved.getEmail(), saved.getRole());
 
-        // Send welcome email (non-blocking)
         try {
             emailService.sendWelcomeEmail(saved);
         } catch (Exception e) {
             log.warn("Welcome email failed for {}: {}", saved.getEmail(), e.getMessage());
         }
 
-        String token = jwtService.generateToken(saved);
-        return new AuthDTO.TokenResponse(token, jwtService.getExpirationMs(), toUserInfo(saved));
+        return issueTokenPair(saved);
     }
+
+    // ── Refresh Token ─────────────────────────────────────────────────
+
+    /**
+     * Validates the incoming refresh token (by comparing its hash to what's stored),
+     * rotates it (issues a new pair), and returns the new access + refresh token.
+     */
+    public AuthDTO.TokenResponse refreshAccessToken(AuthDTO.RefreshRequest req) {
+        String incomingHash = jwtService.hashToken(req.getRefreshToken());
+
+        User user = userRepository.findByRefreshToken(incomingHash)
+                .orElseThrow(() -> new BadCredentialsException("Invalid or expired refresh token"));
+
+        if (!user.isActive())
+            throw new BadCredentialsException("Account is deactivated");
+
+        log.info("Refresh token rotated for: {}", user.getEmail());
+        return issueTokenPair(user);   // rotation: old token replaced by new one
+    }
+
+    // ── Logout (invalidate refresh token) ─────────────────────────────
+
+    public void logout(String email) {
+        userRepository.findByEmail(email).ifPresent(u -> {
+            u.setRefreshToken(null);
+            userRepository.save(u);
+            log.info("Refresh token cleared for: {}", email);
+        });
+    }
+
+    // ── Forgot Password ───────────────────────────────────────────────
+
+    /**
+     * Generates a 6-digit OTP, hashes & stores it, and emails it to the user.
+     * Always returns success (no user-enumeration).
+     */
+    public void forgotPassword(AuthDTO.ForgotPasswordRequest req) {
+        userRepository.findByEmail(req.getEmail()).ifPresent(user -> {
+            if (!user.isActive()) return;
+
+            String otp = generateOtp();
+            user.setPasswordResetOtp(passwordEncoder.encode(otp));   // store hashed
+            user.setPasswordResetOtpExpiry(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES));
+            userRepository.save(user);
+            log.info("Password reset OTP generated for: {}", user.getEmail());
+
+            try {
+                emailService.sendPasswordResetOtp(user, otp);
+            } catch (Exception e) {
+                log.error("Failed to send OTP email to {}: {}", user.getEmail(), e.getMessage());
+            }
+        });
+    }
+
+    // ── Reset Password ────────────────────────────────────────────────
+
+    public void resetPassword(AuthDTO.ResetPasswordRequest req) {
+        User user = userRepository.findByEmail(req.getEmail())
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or OTP"));
+
+        if (user.getPasswordResetOtp() == null || user.getPasswordResetOtpExpiry() == null)
+            throw new BadCredentialsException("No active password reset request found");
+
+        if (LocalDateTime.now().isAfter(user.getPasswordResetOtpExpiry()))
+            throw new BadCredentialsException("OTP has expired. Please request a new one");
+
+        if (!passwordEncoder.matches(req.getOtp(), user.getPasswordResetOtp()))
+            throw new BadCredentialsException("Invalid OTP");
+
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        user.setPasswordResetOtp(null);
+        user.setPasswordResetOtpExpiry(null);
+        user.setRefreshToken(null);   // invalidate all sessions on password reset
+        userRepository.save(user);
+        log.info("Password reset successful for: {}", user.getEmail());
+    }
+
+    // ── Change Password (authenticated) ──────────────────────────────
 
     public void changePassword(String userId, AuthDTO.ChangePasswordRequest req) {
         User user = userRepository.findById(userId)
@@ -83,12 +161,15 @@ public class UserService {
         if (!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword()))
             throw new BadCredentialsException("Current password is incorrect");
         user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        user.setRefreshToken(null);   // force re-login after password change
         userRepository.save(user);
         log.info("Password changed for user: {}", user.getEmail());
     }
 
+    // ── User management ───────────────────────────────────────────────
+
     public List<User> getAllUsers() {
-        return userRepository.findByIsActiveTrue();
+        return userRepository.findAll();   // return ALL users including inactive
     }
 
     public List<User> getUsersByRole(String role) {
@@ -106,9 +187,58 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    /** ADMIN — update user name, phone, role, active status, optionally reset password */
+    public User updateUser(String id, AuthDTO.UpdateUserRequest req) {
+        User user = getById(id);
+        if (req.getName()     != null) user.setName(req.getName());
+        if (req.getPhone()    != null) user.setPhone(req.getPhone());
+        if (req.getRole()     != null) user.setRole(req.getRole().toUpperCase());
+        if (req.getIsActive() != null) user.setActive(req.getIsActive());
+        if (req.getNewPassword() != null && !req.getNewPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+            user.setRefreshToken(null);   // invalidate all sessions
+            log.info("Password reset by admin for user: {}", user.getEmail());
+        }
+        User saved = userRepository.save(user);
+        log.info("User updated by admin: {} id={}", saved.getEmail(), id);
+        return saved;
+    }
+
+    /** ADMIN — hard delete a user */
+    public void deleteUser(String id) {
+        User user = getById(id);
+        userRepository.deleteById(id);
+        log.info("User deleted by admin: {} id={}", user.getEmail(), id);
+    }
+
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────
+
+    /** Issue access + refresh token pair, rotate refresh token in DB */
+    private AuthDTO.TokenResponse issueTokenPair(User user) {
+        String accessToken   = jwtService.generateToken(user);
+        String refreshToken  = jwtService.generateRefreshToken();      // plain token sent to client
+        String hashedRefresh = jwtService.hashToken(refreshToken);     // hash stored in DB
+
+        user.setRefreshToken(hashedRefresh);
+        userRepository.save(user);
+
+        return new AuthDTO.TokenResponse(
+                accessToken,
+                refreshToken,
+                jwtService.getExpirationMs(),
+                toUserInfo(user)
+        );
+    }
+
+    private String generateOtp() {
+        SecureRandom rng = new SecureRandom();
+        int otp = 100_000 + rng.nextInt(900_000);  // 6-digit
+        return String.valueOf(otp);
     }
 
     private AuthDTO.UserInfo toUserInfo(User u) {

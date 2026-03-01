@@ -41,7 +41,10 @@ public class User {
 
     private boolean isEmailVerified;
 
-    private String refreshToken;       // stored for token rotation (future)
+    private String refreshToken;           // hashed refresh token for rotation
+
+    private String passwordResetOtp;       // 6-digit OTP
+    private java.time.LocalDateTime passwordResetOtpExpiry;
 
     @CreatedDate
     private LocalDateTime createdAt;

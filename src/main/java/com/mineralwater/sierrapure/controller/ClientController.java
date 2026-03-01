@@ -6,6 +6,7 @@ import com.mineralwater.sierrapure.model.Client;
 import com.mineralwater.sierrapure.model.ImageAsset;
 import com.mineralwater.sierrapure.service.ClientService;
 import com.mineralwater.sierrapure.service.ImageStorageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/clients")
 @RequiredArgsConstructor
+@Tag(name = "Clients", description = "Client management — CRUD and logo upload")
 public class ClientController {
 
     private final ClientService clientService;

@@ -4,6 +4,7 @@ import { Box, Container, Typography, Grid, Button, Skeleton, ToggleButton, Toggl
 import { Link } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/products/ProductCard';
+import ComparisonTable from '../components/products/ComparisonTable';
 
 const FILTER_OPTIONS = [
   { label: 'All',         value: '' },
@@ -17,7 +18,7 @@ const FILTER_OPTIONS = [
 
 function ProductSkeleton() {
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
       <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid #E2EAF4' }}>
         <Skeleton variant="rectangular" height={220} />
         <Box sx={{ p: 3 }}>
@@ -92,7 +93,7 @@ export default function Products() {
               ? [1, 2, 3].map((i) => <ProductSkeleton key={i} />)
               : products.length === 0
                 ? (
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Box sx={{ textAlign: 'center', py: 10 }}>
                       <Typography sx={{ color: 'var(--text-muted)', mb: 3 }}>No products found for this filter.</Typography>
                       <Button component={Link} to="/contact" variant="contained"
@@ -103,7 +104,7 @@ export default function Products() {
                   </Grid>
                 )
                 : products.map((product, i) => (
-                  <Grid item xs={12} sm={6} md={4} key={product.id}>
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={product.id}>
                     <ProductCard product={product} index={i} />
                   </Grid>
                 ))
@@ -111,6 +112,8 @@ export default function Products() {
           </Grid>
         </Container>
       </Box>
+
+      <ComparisonTable />
     </>
   );
 }

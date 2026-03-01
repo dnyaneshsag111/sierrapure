@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Welcome to Sierra Pure</title>
+</head>
+<body style="margin:0;padding:0;background:#EEF2F7;font-family:Inter,Arial,Helvetica,sans-serif">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#EEF2F7;padding:32px 16px">
+  <tr><td align="center">
+  <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2eaf4">
+
+    <!-- ══ HEADER ══ -->
+    <tr><td style="background:linear-gradient(135deg,#0A2342 0%,#1B6CA8 100%);padding:0">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding:32px 40px 12px">
+          <p style="margin:0;color:rgba(255,255,255,0.5);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600">SIERRA PURE</p>
+          <h1 style="margin:6px 0 0;color:white;font-size:26px;font-weight:800">Welcome Aboard! &#127881;</h1>
+        </td></tr>
+        <tr><td style="padding:0 40px">
+          <div style="width:48px;height:3px;background:#C9A84C;border-radius:2px;margin-bottom:28px"></div>
+        </td></tr>
+      </table>
+    </td></tr>
+
+    <!-- ══ BODY ══ -->
+    <tr><td style="padding:36px 40px 28px">
+      <h2 style="margin:0 0 12px;color:#0A2342;font-size:18px;font-weight:700">
+        Hello, <span th:text="${name}">User</span>! &#128075;
+      </h2>
+      <p style="margin:0 0 24px;color:#5C6B85;line-height:1.7;font-size:14px">
+        Your Sierra Pure account has been created successfully. Here are your account details:
+      </p>
+
+      <!-- Account info card -->
+      <table width="100%" cellpadding="0" cellspacing="0"
+             style="background:#F8FBFF;border:1px solid #E2EAF4;border-radius:8px;overflow:hidden;font-size:13px;margin-bottom:28px">
+        <tr>
+          <td style="padding:12px 16px;color:#0A2342;font-weight:600;width:120px;border-bottom:1px solid #E2EAF4">Name</td>
+          <td style="padding:12px 16px;color:#5C6B85;border-bottom:1px solid #E2EAF4" th:text="${name}">—</td>
+        </tr>
+        <tr style="background:#ffffff">
+          <td style="padding:12px 16px;color:#0A2342;font-weight:600;border-bottom:1px solid #E2EAF4">Email</td>
+          <td style="padding:12px 16px;color:#5C6B85;border-bottom:1px solid #E2EAF4" th:text="${email}">—</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 16px;color:#0A2342;font-weight:600">Role</td>
+          <td style="padding:12px 16px">
+            <span th:text="${roleName}"
+                  th:style="${role == 'ADMIN'} ? 'background:#E74C3C18;color:#E74C3C;padding:3px 12px;border-radius:10px;font-weight:700;font-size:12px'
+                           : (${role == 'LAB_ANALYST'} ? 'background:#1B6CA818;color:#1B6CA8;padding:3px 12px;border-radius:10px;font-weight:700;font-size:12px'
+                           : 'background:#2ECC7118;color:#1a8a4a;padding:3px 12px;border-radius:10px;font-weight:700;font-size:12px')">
+              Role
+            </span>
+          </td>
+        </tr>
+      </table>
+
+      <!-- CTA -->
+      <div style="text-align:center">
+        <a th:href="${baseUrl + '/admin'}"
+           style="display:inline-block;background:linear-gradient(135deg,#0A2342,#1B6CA8);color:white;text-decoration:none;padding:14px 32px;border-radius:24px;font-weight:700;font-size:14px">
+          Access the Portal &#8594;
+        </a>
+      </div>
+    </td></tr>
+
+    <!-- ══ TIPS ══ -->
+    <tr><td style="background:#F0F6FF;padding:20px 40px;border-top:1px solid #E2EAF4">
+      <p style="margin:0 0 10px;color:#0A2342;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Quick Tips</p>
+      <p style="margin:0 0 6px;color:#5C6B85;font-size:13px">&#128274; Keep your login credentials secure and do not share them.</p>
+      <p style="margin:0 0 6px;color:#5C6B85;font-size:13px">&#128260; You can change your password anytime from your profile settings.</p>
+      <p style="margin:0;color:#5C6B85;font-size:13px">&#128222; Contact support@sierrapure.in if you need any help.</p>
+    </td></tr>
+
+    <!-- ══ FOOTER ══ -->
+    <tr><td style="background:#071829;padding:20px 40px;text-align:center">
+      <p style="margin:0 0 4px;color:rgba(255,255,255,0.8);font-weight:700;font-size:13px">Sierra Pure</p>
+      <p style="margin:0;color:rgba(255,255,255,0.35);font-size:11px">
+        Premium Mineral Water &middot; sierrapure.in &middot; &copy; 2026 Sierra Pure
+      </p>
+      <div style="margin-top:12px;border-top:1px solid rgba(255,255,255,0.07);padding-top:10px">
+        <p style="margin:0;color:rgba(255,255,255,0.15);font-size:10px;letter-spacing:2px;text-transform:uppercase">Purity You Can Trust</p>
+      </div>
+    </td></tr>
+
+  </table>
+  </td></tr>
+</table>
+</body>
+</html>

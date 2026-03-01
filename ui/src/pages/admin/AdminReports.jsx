@@ -4,6 +4,7 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   IconButton, Tooltip, Dialog, DialogTitle, DialogContent,
   DialogActions, Grid, Switch, FormControlLabel, Select, MenuItem,
+  TablePagination,
 } from '@mui/material';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import AddIcon from '@mui/icons-material/Add';
@@ -105,12 +106,22 @@ function ReportDialog({ report, open, onClose }) {
 
 export default function AdminReports() {
   const [dialog, setDialog] = useState(null);
+  const [search, setSearch] = useState('');
+  const [page, setPage]     = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ['admin-reports'],
-    queryFn: () => api.get('/lab-reports?page=0&size=50').then(r => r.data.data),
+    queryFn: () => api.get('/lab-reports?page=0&size=200').then(r => r.data.data),
   });
-  const reports = data?.content ?? [];
+  const allReports = data?.content ?? [];
+
+  const filtered = allReports.filter(r =>
+    !search || [r.batchNumber, r.reportId, r.labName, r.bottleSize].some(v =>
+      v?.toLowerCase().includes(search.toLowerCase())
+    )
+  );
+  const paged = filtered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const togglePublish = useMutation({
     mutationFn: ({ id, current }) => api.patch(`/lab-reports/${id}/publish`, { isPublished: !current }).then(r => r.data.data),
@@ -126,7 +137,7 @@ export default function AdminReports() {
             Manage Lab Reports
           </Typography>
           <Typography sx={{ color: 'var(--text-muted)', fontSize: '0.9rem', mt: 0.5 }}>
-            {reports.length} reports · Create, edit, publish/unpublish, and download PDFs.
+            {allReports.length} reports · Create, edit, publish/unpublish, and download PDFs.
           </Typography>
         </Box>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => setDialog('new')}
@@ -134,6 +145,10 @@ export default function AdminReports() {
           New Report
         </Button>
       </Box>
+
+      <TextField size="small" placeholder="Search batch, report ID, lab, size..."
+        value={search} onChange={e => { setSearch(e.target.value); setPage(0); }}
+        sx={{ mb: 2, width: { xs: '100%', sm: 340 }, '& .MuiOutlinedInput-root': { borderRadius: 9999 } }} />
 
       <Card sx={{ borderRadius: 3, border: '1px solid #E2EAF4', overflow: 'hidden' }}>
         <TableContainer>
@@ -148,7 +163,9 @@ export default function AdminReports() {
             <TableBody>
               {isLoading ? (
                 <TableRow><TableCell colSpan={8} sx={{ textAlign: 'center', py: 4, color: 'var(--text-muted)' }}>Loading...</TableCell></TableRow>
-              ) : reports.map((r) => (
+              ) : paged.length === 0 ? (
+                <TableRow><TableCell colSpan={8} sx={{ textAlign: 'center', py: 4, color: 'var(--text-muted)' }}>No reports found.</TableCell></TableRow>
+              ) : paged.map((r) => (
                 <TableRow key={r.id} sx={{ '&:hover': { background: '#F8FBFF' } }}>
                   <TableCell sx={{ fontSize: '0.78rem', fontWeight: 700, color: '#1B6CA8' }}>{r.reportId}</TableCell>
                   <TableCell sx={{ fontSize: '0.75rem' }}>{r.batchNumber}</TableCell>
@@ -187,6 +204,16 @@ export default function AdminReports() {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          component="div"
+          count={filtered.length}
+          page={page}
+          onPageChange={(_, p) => setPage(p)}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={e => { setRowsPerPage(+e.target.value); setPage(0); }}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          sx={{ borderTop: '1px solid #E2EAF4', fontSize: '0.78rem' }}
+        />
       </Card>
 
       {dialog && (

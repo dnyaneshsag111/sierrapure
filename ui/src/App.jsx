@@ -15,6 +15,8 @@ import ScrollToTop from './components/common/ScrollToTop';
 import PageLoader from './components/common/PageLoader';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import WhatsAppWidget from './components/common/WhatsAppWidget';
+import QuoteFAB from './components/common/QuoteFAB';
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
 
@@ -28,6 +30,9 @@ const LabReports      = lazy(() => import('./pages/LabReports'));
 const LabReportDetail = lazy(() => import('./pages/LabReportDetail'));
 const Contact         = lazy(() => import('./pages/Contact'));
 const Login           = lazy(() => import('./pages/Login'));
+const ForgotPassword  = lazy(() => import('./pages/ForgotPassword'));
+const QRScan          = lazy(() => import('./pages/QRScan'));
+const NotFound        = lazy(() => import('./pages/NotFound'));
 
 // Admin pages
 const AdminLayout    = lazy(() => import('./pages/admin/AdminLayout'));
@@ -38,6 +43,8 @@ const AdminClients   = lazy(() => import('./pages/admin/AdminClients'));
 const AdminReports   = lazy(() => import('./pages/admin/AdminReports'));
 const AdminEnquiries = lazy(() => import('./pages/admin/AdminEnquiries'));
 const AdminUsers     = lazy(() => import('./pages/admin/AdminUsers'));
+const AdminProfile   = lazy(() => import('./pages/admin/AdminProfile'));
+const AdminQuotations = lazy(() => import('./pages/admin/AdminQuotations'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,7 +59,7 @@ const queryClient = new QueryClient({
 function SiteLayout() {
   const location = useLocation();
   const isAdmin  = location.pathname.startsWith('/admin');
-  const isLogin  = location.pathname === '/login';
+  const isLogin  = location.pathname === '/login' || location.pathname === '/forgot-password';
   return (
     <>
       {!isAdmin && !isLogin && <Navbar />}
@@ -70,7 +77,10 @@ function SiteLayout() {
             <Route path="/lab-reports/:id"                element={<LabReportDetail />} />
             <Route path="/lab-reports/batch/:batchNumber" element={<LabReportDetail />} />
             <Route path="/lab-reports/date/:date"         element={<LabReports />} />
+            <Route path="/scan/:batchNumber"              element={<QRScan />} />
+            <Route path="/scan"                           element={<QRScan />} />
             <Route path="/login"                          element={<Login />} />
+            <Route path="/forgot-password"                element={<ForgotPassword />} />
 
             {/* Admin — protected, no Navbar/Footer */}
             <Route path="/admin" element={
@@ -83,17 +93,25 @@ function SiteLayout() {
               <Route path="products"   element={<AdminProducts />} />
               <Route path="clients"    element={<AdminClients />} />
               <Route path="reports"    element={<AdminReports />} />
-              <Route path="enquiries"  element={<AdminEnquiries />} />
+              <Route path="enquiries"   element={<AdminEnquiries />} />
+              <Route path="quotations"  element={<AdminQuotations />} />
+              <Route path="profile"     element={<AdminProfile />} />
               <Route path="users"      element={
                 <ProtectedRoute roles={['ADMIN']}>
                   <AdminUsers />
                 </ProtectedRoute>
               } />
             </Route>
+
+            {/* 404 fallback */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
       {!isAdmin && !isLogin && <Footer />}
+      {/* Global floating widgets — show on all public pages except admin/login */}
+      {!isAdmin && !isLogin && <WhatsAppWidget />}
+      {!isAdmin && !isLogin && <QuoteFAB />}
     </>
   );
 }

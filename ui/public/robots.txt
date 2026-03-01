@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+# Block admin panel from indexing
+Disallow: /admin/
+Disallow: /login
+Disallow: /forgot-password
+Sitemap: https://sierrapure.in/sitemap.xml

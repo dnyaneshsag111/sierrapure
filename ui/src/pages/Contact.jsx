@@ -14,6 +14,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { contactService } from '../services/contactService';
+import FAQSection from '../components/common/FAQSection';
 
 const SEGMENTS = ['hotel', 'restaurant', 'industry', 'travel', 'events', 'other'];
 const BOTTLE_SIZES = ['200ml', '500ml', '1000ml'];
@@ -94,7 +95,7 @@ export default function Contact() {
         <Container maxWidth="xl">
           <Grid container spacing={5}>
             {/* Form */}
-            <Grid item xs={12} md={7}>
+            <Grid size={{ xs: 12, md: 7 }}>
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                 <Box
                   component="form"
@@ -112,22 +113,22 @@ export default function Contact() {
                   </Typography>
 
                   <Grid container spacing={2.5}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField fullWidth label="Full Name *" name="name" value={form.name} onChange={handleChange}
                         error={!!errors.name} helperText={errors.name} />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField fullWidth label="Company / Hotel Name" name="company" value={form.company} onChange={handleChange} />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField fullWidth label="Email Address *" name="email" value={form.email} onChange={handleChange}
                         error={!!errors.email} helperText={errors.email} />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField fullWidth label="Phone Number *" name="phone" value={form.phone} onChange={handleChange}
                         error={!!errors.phone} helperText={errors.phone} />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <TextField select fullWidth label="Business Segment *" name="segment" value={form.segment} onChange={handleChange}
                         error={!!errors.segment} helperText={errors.segment}>
                         {SEGMENTS.map((s) => (
@@ -135,7 +136,7 @@ export default function Contact() {
                         ))}
                       </TextField>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Typography sx={{ fontSize: '0.9rem', color: '#0A2342', fontWeight: 600, mb: 1.5 }}>
                         Bottle Sizes Required
                       </Typography>
@@ -158,12 +159,12 @@ export default function Contact() {
                         ))}
                       </Box>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <TextField fullWidth multiline rows={4} label="Message / Requirement *" name="message"
                         value={form.message} onChange={handleChange} error={!!errors.message} helperText={errors.message}
                         placeholder="Tell us about your requirements, quantity, delivery location, etc." />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <FormControlLabel
                         control={<Checkbox checked={form.customLabel} name="customLabel" onChange={handleChange} sx={{ color: '#1B6CA8', '&.Mui-checked': { color: '#1B6CA8' } }} />}
                         label={<Typography sx={{ fontSize: '0.92rem', color: '#4A5568' }}>I need custom label / branding on the bottles</Typography>}
@@ -201,7 +202,7 @@ export default function Contact() {
             </Grid>
 
             {/* Contact Info */}
-            <Grid item xs={12} md={5}>
+            <Grid size={{ xs: 12, md: 5 }}>
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
                 <Typography variant="h4" sx={{ color: '#0A2342', mb: 3, fontWeight: 700 }}>
                   Get In Touch
@@ -253,8 +254,8 @@ export default function Contact() {
                 <Box sx={{ mt: 3, p: 3, background: 'linear-gradient(135deg, #0A2342, #1B6CA8)', borderRadius: 3 }}>
                   <Typography sx={{ color: 'white', fontWeight: 700, mb: 1 }}>Business Hours</Typography>
                   <Typography sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.88rem', lineHeight: 1.8 }}>
-                    Monday – Saturday: 9:00 AM – 7:00 PM<br />
-                    Sunday: 10:00 AM – 4:00 PM<br />
+                    Monday - Saturday: 9:00 AM - 7:00 PM<br />
+                    Sunday: 10:00 AM - 4:00 PM<br />
                     <span style={{ color: 'rgba(255,255,255,0.5)' }}>WhatsApp available 24/7</span>
                   </Typography>
                 </Box>
@@ -263,6 +264,56 @@ export default function Contact() {
           </Grid>
         </Container>
       </Box>
+
+      {/* Google Maps Embed */}
+      <Box sx={{ background: 'white', lineHeight: 0 }}>
+        <Box
+          sx={{
+            width: '100%',
+            height: { xs: 280, md: 420 },
+            position: 'relative',
+            overflow: 'hidden',
+            borderTop: '4px solid',
+            borderBottom: '4px solid',
+            borderColor: '#E2EAF4',
+          }}
+        >
+          <iframe
+            title="Sierra Pure Manufacturing Location"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d242117.70619780613!2d73.72283975!3d18.5245649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bf2e67461101%3A0x828d43bf9d9ee343!2sPune%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1709900000000!5m2!1sen!2sin"
+            width="100%"
+            height="100%"
+            style={{ border: 0, display: 'block' }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          {/* Map overlay label */}
+          <Box
+            sx={{
+              position: 'absolute', top: 16, left: 16,
+              background: 'white',
+              borderRadius: 2, px: 2, py: 1.2,
+              boxShadow: '0 4px 16px rgba(10,35,66,0.15)',
+              border: '1px solid #E2EAF4',
+              display: 'flex', alignItems: 'center', gap: 1,
+            }}
+          >
+            <LocationOnIcon sx={{ color: '#E74C3C', fontSize: 20 }} />
+            <Box>
+              <Typography sx={{ fontWeight: 700, fontSize: '0.82rem', color: '#0A2342', lineHeight: 1.2 }}>
+                Sierra Pure Manufacturing Unit
+              </Typography>
+              <Typography sx={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                Industrial Area, Maharashtra, India
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* FAQ Section */}
+      <FAQSection />
     </>
   );
 }

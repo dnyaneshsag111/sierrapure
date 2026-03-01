@@ -1,0 +1,15 @@
+{
+  "name": "Sierra Pure",
+  "short_name": "Sierra Pure",
+  "description": "Premium Mineral Water — Verified Purity, Every Batch",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A2342",
+  "theme_color": "#0A2342",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/vite.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "categories": ["food", "health", "business"],
+  "lang": "en"
+}

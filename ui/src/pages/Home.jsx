@@ -5,6 +5,12 @@ import ProductHighlights from '../components/home/ProductHighlights';
 import LatestLabReport from '../components/home/LatestLabReport';
 import WhyChooseUs from '../components/home/WhyChooseUs';
 import ClientSegments from '../components/home/ClientSegments';
+import FiltrationProcess from '../components/home/FiltrationProcess';
+import TestimonialsSection from '../components/home/TestimonialsSection';
+import WaterSourceStory from '../components/home/WaterSourceStory';
+import HowToOrder from '../components/home/HowToOrder';
+import CertificationStrip from '../components/common/CertificationStrip';
+import MineralProfile from '../components/common/MineralProfile';
 import { Box, Container, Typography, Button, Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -26,8 +32,14 @@ export default function Home() {
       <StatsSection />
       <ProductHighlights />
       <WhyChooseUs />
+      <WaterSourceStory />
+      <FiltrationProcess />
+      <MineralProfile />
       <LatestLabReport />
+      <HowToOrder />
       <ClientSegments />
+      <TestimonialsSection />
+      <CertificationStrip />
 
       {/* Customization CTA Banner */}
       <Box

@@ -4,12 +4,13 @@ import toast from 'react-hot-toast';
 
 const AuthContext = createContext(null);
 
-const TOKEN_KEY = 'sp_token';
-const USER_KEY  = 'sp_user';
+const TOKEN_KEY   = 'sp_token';
+const REFRESH_KEY = 'sp_refresh_token';
+const USER_KEY    = 'sp_user';
 
 export function AuthProvider({ children }) {
-  const [token, setToken]   = useState(() => localStorage.getItem(TOKEN_KEY));
-  const [user,  setUser]    = useState(() => {
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
+  const [user,  setUser]  = useState(() => {
     try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
   });
 
@@ -24,8 +25,9 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
-    const { accessToken, user: u } = res.data.data;
+    const { accessToken, refreshToken, user: u } = res.data.data;
     localStorage.setItem(TOKEN_KEY, accessToken);
+    if (refreshToken) localStorage.setItem(REFRESH_KEY, refreshToken);
     localStorage.setItem(USER_KEY, JSON.stringify(u));
     setToken(accessToken);
     setUser(u);
@@ -33,8 +35,14 @@ export function AuthProvider({ children }) {
     return u;
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch {
+      // ignore server error — clear client state regardless
+    }
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_KEY);
     localStorage.removeItem(USER_KEY);
     setToken(null);
     setUser(null);
@@ -60,3 +68,5 @@ export function useAuth() {
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
   return ctx;
 }
+
+

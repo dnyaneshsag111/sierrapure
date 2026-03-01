@@ -76,7 +76,7 @@ export default function Login() {
             fullWidth label="Password" required
             type={showPw ? 'text' : 'password'}
             value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-            sx={{ mb: 3, '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }}
+            sx={{ mb: 1.5, '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }}
             autoComplete="current-password"
             InputProps={{
               endAdornment: (
@@ -88,6 +88,12 @@ export default function Login() {
               )
             }}
           />
+          {/* Forgot password link */}
+          <Box sx={{ textAlign: 'right', mb: 2.5 }}>
+            <Link to="/forgot-password" style={{ fontSize: '0.82rem', color: '#1B6CA8', textDecoration: 'none', fontWeight: 500 }}>
+              Forgot password?
+            </Link>
+          </Box>
           <Button
             type="submit" fullWidth variant="contained" disabled={loading}
             sx={{ py: 1.5, borderRadius: 9999, fontWeight: 700, fontSize: '0.95rem',

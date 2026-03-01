@@ -6,6 +6,7 @@ import com.mineralwater.sierrapure.model.ImageAsset;
 import com.mineralwater.sierrapure.model.Product;
 import com.mineralwater.sierrapure.service.ImageStorageService;
 import com.mineralwater.sierrapure.service.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
+@Tag(name = "Products", description = "Product catalogue — CRUD and image upload (Admin only for writes)")
 public class ProductController {
 
     private final ProductService productService;

@@ -44,7 +44,7 @@ export default function Footer() {
       <Container maxWidth="xl">
         <Grid container spacing={5}>
           {/* Brand Column */}
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ mb: 2.5 }}>
               <Box
                 component="img"
@@ -126,7 +126,7 @@ export default function Footer() {
           </Grid>
 
           {/* Quick Links */}
-          <Grid item xs={6} md={2.5}>
+          <Grid size={{ xs: 6, md: 2.5 }}>
             <Typography
               sx={{
                 fontWeight: 700,
@@ -170,7 +170,7 @@ export default function Footer() {
           </Grid>
 
           {/* Products */}
-          <Grid item xs={6} md={2.5}>
+          <Grid size={{ xs: 6, md: 2.5 }}>
             <Typography
               sx={{
                 fontWeight: 700,
@@ -203,7 +203,7 @@ export default function Footer() {
           </Grid>
 
           {/* Contact Info */}
-          <Grid item xs={12} md={3}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Typography
               sx={{
                 fontWeight: 700,

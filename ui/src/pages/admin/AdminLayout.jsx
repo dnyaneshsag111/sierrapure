@@ -12,9 +12,11 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import PeopleIcon from '@mui/icons-material/People';
 import ScienceIcon from '@mui/icons-material/Science';
 import MailIcon from '@mui/icons-material/Mail';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import sierraLogo from '../../assets/images/Sierra.svg';
 import { useAuth } from '../../context/AuthContext';
 
@@ -26,8 +28,10 @@ const NAV = [
   { label: 'Products',      path: '/admin/products',   icon: <InventoryIcon />, roles: ['ADMIN'] },
   { label: 'Clients',       path: '/admin/clients',    icon: <PeopleIcon />,    roles: ['ADMIN'] },
   { label: 'Lab Reports',   path: '/admin/reports',    icon: <ScienceIcon />,   roles: ['ADMIN','LAB_ANALYST'] },
-  { label: 'Enquiries',     path: '/admin/enquiries',  icon: <MailIcon />,      roles: ['ADMIN','LAB_ANALYST'] },
-  { label: 'Users',         path: '/admin/users',      icon: <PeopleAltIcon />, roles: ['ADMIN'] },
+  { label: 'Enquiries',     path: '/admin/enquiries',   icon: <MailIcon />,           roles: ['ADMIN','LAB_ANALYST'] },
+  { label: 'Quotations',    path: '/admin/quotations',  icon: <RequestQuoteIcon />,   roles: ['ADMIN'] },
+  { label: 'Users',         path: '/admin/users',       icon: <PeopleAltIcon />,      roles: ['ADMIN'] },
+  { label: 'My Profile',    path: '/admin/profile',    icon: <AccountCircleIcon />, roles: ['ADMIN','LAB_ANALYST'] },
 ];
 
 const ROLE_COLORS = { ADMIN: '#E74C3C', LAB_ANALYST: '#4FC3F7', CLIENT: '#2ECC71' };

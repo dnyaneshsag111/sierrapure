@@ -3,6 +3,7 @@ import {
   Box, Typography, Grid, Card, CardContent, Button, TextField,
   Avatar, Chip, Switch, FormControlLabel, Dialog,
   DialogTitle, DialogContent, DialogActions, CircularProgress,
+  Pagination,
 } from '@mui/material';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import AddIcon from '@mui/icons-material/Add';
@@ -106,14 +107,24 @@ function ClientDialog({ client, open, onClose }) {
 }
 
 export default function AdminClients() {
-  const [dialog, setDialog] = useState(null); // null | 'new' | client object
+  const [dialog, setDialog] = useState(null);
+  const [search, setSearch] = useState('');
+  const [page, setPage]     = useState(1);
+  const PAGE_SIZE = 12;
+
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ['admin-clients'],
     queryFn: () => api.get('/clients').then(r => r.data.data),
   });
 
+  const filtered = clients.filter(c =>
+    !search || [c.name, c.location, c.segment].some(v => v?.toLowerCase().includes(search.toLowerCase()))
+  );
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   const grouped = SEGMENTS.map(s => ({
-    ...s, items: clients.filter(c => c.segment === s.value),
+    ...s, items: paged.filter(c => c.segment === s.value),
   }));
 
   return (
@@ -132,6 +143,10 @@ export default function AdminClients() {
           Add Client
         </Button>
       </Box>
+
+      <TextField size="small" placeholder="Search clients by name, location, segment..."
+        value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
+        sx={{ mb: 3, width: { xs: '100%', sm: 340 }, '& .MuiOutlinedInput-root': { borderRadius: 9999 } }} />
 
       {isLoading ? <Typography>Loading...</Typography> : grouped.map((seg) => seg.items.length > 0 && (
         <Box key={seg.value} sx={{ mb: 4 }}>
@@ -183,6 +198,16 @@ export default function AdminClients() {
           open
           onClose={() => setDialog(null)}
         />
+      )}
+
+      {totalPages > 1 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <Pagination
+            count={totalPages} page={page} onChange={(_, p) => setPage(p)}
+            color="primary" shape="rounded"
+            sx={{ '& .MuiPaginationItem-root': { fontWeight: 600 } }}
+          />
+        </Box>
       )}
     </Box>
   );
