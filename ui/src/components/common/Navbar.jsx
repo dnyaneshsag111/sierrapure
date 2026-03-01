@@ -16,14 +16,16 @@ import { useAuth } from '../../context/AuthContext';
 import { useImageAssets } from '../../hooks/useImageAssets';
 
 const NAV_LINKS = [
-  { label: 'Home',          path: '/' },
-  { label: 'About',         path: '/about' },
-  { label: 'Products',      path: '/products' },
-  { label: 'Pricing',       path: '/pricing' },
-  { label: 'Clients',       path: '/clients' },
-  { label: 'Customization', path: '/customization' },
-  { label: 'Lab Reports',   path: '/lab-reports', icon: <ScienceIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-  { label: 'Contact',       path: '/contact' },
+  { label: 'Home',           path: '/' },
+  { label: 'About',          path: '/about' },
+  { label: 'Products',       path: '/products' },
+  { label: 'Pricing',        path: '/pricing' },
+  { label: 'Clients',        path: '/clients' },
+  { label: 'Customization',  path: '/customization' },
+  { label: 'Sustainability',  path: '/sustainability' },
+  { label: 'Blog',           path: '/blog' },
+  { label: 'Lab Reports',    path: '/lab-reports', icon: <ScienceIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+  { label: 'Contact',        path: '/contact' },
 ];
 
 export default function Navbar() {

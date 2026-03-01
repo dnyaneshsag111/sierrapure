@@ -35,4 +35,8 @@ public class ContactRequestDTO {
     private String message;
 
     private boolean customLabel;
+
+    private boolean sampleRequest;
+
+    private String deliveryAddress;
 }

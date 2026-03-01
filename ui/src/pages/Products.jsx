@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Box, Container, Typography, Grid, Button, Skeleton, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { Link } from 'react-router-dom';
+import ScienceIcon from '@mui/icons-material/Science';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/products/ProductCard';
 import ComparisonTable from '../components/products/ComparisonTable';
+import SampleRequestModal from '../components/common/SampleRequestModal';
 
 const FILTER_OPTIONS = [
   { label: 'All',         value: '' },
@@ -35,6 +37,7 @@ function ProductSkeleton() {
 
 export default function Products() {
   const [filter, setFilter] = useState('');
+  const [sampleOpen, setSampleOpen] = useState(false);
 
   const params = {};
   if (filter.startsWith('size:'))    params.size    = filter.replace('size:', '');
@@ -105,15 +108,34 @@ export default function Products() {
                 )
                 : products.map((product, i) => (
                   <Grid size={{ xs: 12, sm: 6, md: 4 }} key={product.id}>
-                    <ProductCard product={product} index={i} />
+                    <ProductCard product={product} index={i} onRequestSample={() => setSampleOpen(true)} />
                   </Grid>
                 ))
             }
           </Grid>
+
+          {/* Sample request banner */}
+          <Box sx={{ mt: 8, p: { xs: 3, md: 4 }, background: 'linear-gradient(135deg, #0A2342, #1565C0)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <ScienceIcon sx={{ color: '#4FC3F7', fontSize: 36 }} />
+              <Box>
+                <Typography sx={{ color: 'white', fontWeight: 800, fontSize: '1.1rem' }}>Try Before You Order</Typography>
+                <Typography sx={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.85rem' }}>
+                  Request complimentary samples — dispatched within 2–3 working days.
+                </Typography>
+              </Box>
+            </Box>
+            <Button variant="contained" onClick={() => setSampleOpen(true)}
+              sx={{ borderRadius: 9999, background: 'white', color: '#0A2342', fontWeight: 700, px: 3.5, py: 1.2, '&:hover': { background: '#F0F4F8' } }}>
+              Request Free Sample
+            </Button>
+          </Box>
         </Container>
       </Box>
 
       <ComparisonTable />
+
+      <SampleRequestModal open={sampleOpen} onClose={() => setSampleOpen(false)} />
     </>
   );
 }

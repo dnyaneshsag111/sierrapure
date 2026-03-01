@@ -37,6 +37,10 @@ public class ContactRequest {
 
     private boolean customLabel;
 
+    private boolean isSampleRequest;   // true when submitted via "Request Sample" flow
+
+    private String deliveryAddress;    // used for sample delivery
+
     @Indexed
     private String status;         // new, contacted, closed
 

@@ -15,14 +15,16 @@ import sierraLogoFallback from '../../assets/images/sierra-logo.svg';
 import { useImageAssets } from '../../hooks/useImageAssets';
 
 const QUICK_LINKS = [
-  { label: 'Home',          path: '/' },
-  { label: 'About Us',      path: '/about' },
-  { label: 'Products',      path: '/products' },
-  { label: 'B2B Pricing',   path: '/pricing' },
-  { label: 'Our Clients',   path: '/clients' },
-  { label: 'Customization', path: '/customization' },
-  { label: 'Lab Reports',   path: '/lab-reports' },
-  { label: 'Contact Us',    path: '/contact' },
+  { label: 'Home',            path: '/' },
+  { label: 'About Us',        path: '/about' },
+  { label: 'Products',        path: '/products' },
+  { label: 'B2B Pricing',     path: '/pricing' },
+  { label: 'Our Clients',     path: '/clients' },
+  { label: 'Customization',   path: '/customization' },
+  { label: 'Sustainability',   path: '/sustainability' },
+  { label: 'Blog',            path: '/blog' },
+  { label: 'Lab Reports',     path: '/lab-reports' },
+  { label: 'Contact Us',      path: '/contact' },
 ];
 
 const CERTIFICATIONS = ['BIS Certified', 'FSSAI Licensed', 'NABL Tested Lab', 'ISO 9001:2015'];

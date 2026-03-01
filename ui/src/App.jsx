@@ -35,6 +35,9 @@ const Login           = lazy(() => import('./pages/Login'));
 const ForgotPassword  = lazy(() => import('./pages/ForgotPassword'));
 const QRScan          = lazy(() => import('./pages/QRScan'));
 const NotFound        = lazy(() => import('./pages/NotFound'));
+const Blog            = lazy(() => import('./pages/Blog'));
+const BlogPost        = lazy(() => import('./pages/BlogPost'));
+const Sustainability  = lazy(() => import('./pages/Sustainability'));
 
 // Admin pages
 const AdminLayout    = lazy(() => import('./pages/admin/AdminLayout'));
@@ -83,6 +86,9 @@ function SiteLayout() {
             <Route path="/lab-reports/date/:date"         element={<LabReports />} />
             <Route path="/scan/:batchNumber"              element={<QRScan />} />
             <Route path="/scan"                           element={<QRScan />} />
+            <Route path="/blog"                           element={<Blog />} />
+            <Route path="/blog/:slug"                     element={<BlogPost />} />
+            <Route path="/sustainability"                  element={<Sustainability />} />
             <Route path="/login"                          element={<Login />} />
             <Route path="/forgot-password"                element={<ForgotPassword />} />
 

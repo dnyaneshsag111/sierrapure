@@ -28,6 +28,8 @@ public class ContactService {
                 .bottleSizes(dto.getBottleSizes())
                 .message(dto.getMessage())
                 .customLabel(dto.isCustomLabel())
+                .isSampleRequest(dto.isSampleRequest())
+                .deliveryAddress(dto.getDeliveryAddress())
                 .status("new")
                 .build();
         ContactRequest saved = contactRepository.save(contact);

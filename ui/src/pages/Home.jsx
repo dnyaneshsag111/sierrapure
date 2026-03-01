@@ -15,7 +15,9 @@ import { Box, Container, Typography, Button, Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { motion } from 'framer-motion';
+import { BLOG_POSTS } from '../data/blogPosts';
 
 export default function Home() {
   return (
@@ -40,6 +42,59 @@ export default function Home() {
       <ClientSegments />
       <TestimonialsSection />
       <CertificationStrip />
+
+      {/* ── Latest Articles ── */}
+      <Box sx={{ py: { xs: 8, md: 10 }, background: '#F8FBFF' }}>
+        <Container maxWidth="xl">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mb: 5, flexWrap: 'wrap', gap: 2 }}>
+            <Box>
+              <Typography variant="overline" sx={{ color: '#1565C0', fontWeight: 700, letterSpacing: '0.18em', fontSize: '0.8rem' }}>
+                Water Quality Insights
+              </Typography>
+              <Typography variant="h2" sx={{ mt: 0.5, fontSize: { xs: '1.8rem', md: '2.4rem' }, color: '#0B1F3A', fontFamily: "'Playfair Display', serif" }}>
+                Latest Articles
+              </Typography>
+            </Box>
+            <Button component={Link} to="/blog" endIcon={<ArrowForwardIcon />}
+              sx={{ borderRadius: 9999, color: '#1565C0', fontWeight: 700, '&:hover': { background: '#EEF4FF' } }}>
+              All Articles
+            </Button>
+          </Box>
+          <Grid container spacing={3}>
+            {BLOG_POSTS.slice(0, 3).map((post, i) => (
+              <Grid item xs={12} md={4} key={post.slug}>
+                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                  <Box component={Link} to={`/blog/${post.slug}`} sx={{
+                    textDecoration: 'none', display: 'block', background: 'white', borderRadius: 3,
+                    border: '1px solid #E2EAF4', overflow: 'hidden',
+                    transition: 'all 0.25s', '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 14px 40px rgba(10,35,66,0.08)' },
+                  }}>
+                    <Box sx={{ background: post.coverGradient, height: 120, display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', fontSize: '3.5rem' }}>
+                      {post.coverEmoji}
+                    </Box>
+                    <Box sx={{ p: 2.5 }}>
+                      <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, color: '#1565C0', letterSpacing: '0.1em', mb: 0.8 }}>
+                        {post.category.toUpperCase()}
+                      </Typography>
+                      <Typography sx={{ fontWeight: 700, color: '#0A2342', fontSize: '0.95rem', lineHeight: 1.4, mb: 1 }}>
+                        {post.title}
+                      </Typography>
+                      <Typography sx={{ color: 'var(--text-muted)', fontSize: '0.8rem', lineHeight: 1.6, mb: 1.5 }}>
+                        {post.excerpt}
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                        <AccessTimeIcon sx={{ fontSize: 12 }} /> {post.readTime}
+                      </Box>
+                    </Box>
+                  </Box>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
 
       {/* Customization CTA Banner */}
       <Box
