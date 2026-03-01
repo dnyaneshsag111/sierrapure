@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#060F1E"/>
+      <stop offset="50%" style="stop-color:#0A2342"/>
+      <stop offset="100%" style="stop-color:#0D3060"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#060F1E;stop-opacity:0"/>
+    </radialGradient>
+    <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C9A84C;stop-opacity:0"/>
+      <stop offset="20%" style="stop-color:#C9A84C;stop-opacity:1"/>
+      <stop offset="80%" style="stop-color:#F0C040;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#C9A84C;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <rect width="1280" height="720" fill="url(#glow)"/>
+
+  <!-- Mountain silhouette background -->
+  <path d="M0,520 L180,320 L360,440 L540,260 L720,400 L900,200 L1080,350 L1280,280 L1280,720 L0,720 Z" fill="rgba(10,35,66,0.5)"/>
+  <path d="M0,580 L220,380 L440,500 L660,300 L880,480 L1100,360 L1280,440 L1280,720 L0,720 Z" fill="rgba(6,15,30,0.6)"/>
+
+  <!-- Water ripples -->
+  <ellipse cx="640" cy="360" rx="400" ry="200" fill="none" stroke="rgba(79,195,247,0.05)" stroke-width="1"/>
+  <ellipse cx="640" cy="360" rx="300" ry="150" fill="none" stroke="rgba(79,195,247,0.07)" stroke-width="1"/>
+  <ellipse cx="640" cy="360" rx="200" ry="100" fill="none" stroke="rgba(79,195,247,0.1)" stroke-width="1"/>
+
+  <!-- Center logo area -->
+  <circle cx="640" cy="280" r="120" fill="rgba(27,108,168,0.08)" stroke="rgba(79,195,247,0.15)" stroke-width="1"/>
+
+  <!-- Mountain icon -->
+  <polygon points="640,160 580,280 700,280" fill="rgba(79,195,247,0.6)"/>
+  <polygon points="640,175 605,280 675,280" fill="rgba(27,108,168,0.5)"/>
+  <polygon points="680,195 650,280 710,280" fill="rgba(79,195,247,0.4)"/>
+
+  <!-- Water waves at mountain base -->
+  <path d="M560,286 Q580,278 600,286 Q620,294 640,286 Q660,278 680,286 Q700,294 720,286 L720,300 L560,300 Z" fill="rgba(79,195,247,0.5)"/>
+
+  <!-- Gold accent line -->
+  <rect x="490" y="306" width="300" height="2" rx="1" fill="url(#goldLine)"/>
+
+  <!-- Brand text -->
+  <text x="640" y="358" text-anchor="middle" font-family="Georgia, serif" font-size="64" font-weight="700" fill="white" letter-spacing="8" opacity="0.95">SIERRA</text>
+  <text x="640" y="404" text-anchor="middle" font-family="Georgia, serif" font-size="42" font-weight="300" fill="#4FC3F7" letter-spacing="24">PURE</text>
+
+  <!-- Gold bottom accent -->
+  <rect x="490" y="414" width="300" height="2" rx="1" fill="url(#goldLine)"/>
+
+  <!-- Tagline -->
+  <text x="640" y="448" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.5)" letter-spacing="6">PREMIUM MINERAL WATER</text>
+
+  <!-- Quality badges -->
+  <g transform="translate(640, 510)">
+    <rect x="-220" y="-18" width="130" height="36" rx="18" fill="rgba(79,195,247,0.1)" stroke="rgba(79,195,247,0.3)" stroke-width="1"/>
+    <text x="-155" y="6" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#4FC3F7" letter-spacing="1">BIS CERTIFIED</text>
+
+    <rect x="-70" y="-18" width="140" height="36" rx="18" fill="rgba(46,204,113,0.1)" stroke="rgba(46,204,113,0.3)" stroke-width="1"/>
+    <text x="0" y="6" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#2ECC71" letter-spacing="1">NABL TESTED</text>
+
+    <rect x="90" y="-18" width="140" height="36" rx="18" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+    <text x="160" y="6" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#C9A84C" letter-spacing="1">7-STAGE PURE</text>
+  </g>
+
+  <!-- Decorative particles -->
+  <circle cx="200" cy="180" r="3" fill="#4FC3F7" opacity="0.3"/>
+  <circle cx="400" cy="120" r="2" fill="#4FC3F7" opacity="0.25"/>
+  <circle cx="1050" cy="200" r="3" fill="#81D4FA" opacity="0.3"/>
+  <circle cx="900" cy="150" r="2" fill="#4FC3F7" opacity="0.25"/>
+  <circle cx="300" cy="450" r="2.5" fill="#4FC3F7" opacity="0.2"/>
+  <circle cx="1000" cy="500" r="2" fill="#81D4FA" opacity="0.2"/>
+
+  <!-- Bottom watermark text -->
+  <text x="640" y="690" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="rgba(255,255,255,0.2)" letter-spacing="3">www.sierrapure.in</text>
+</svg>

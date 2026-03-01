@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Lab Report - Sierra Pure</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm 20mm 15mm;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      color: #0A2342;
+      background: #fff;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      border-bottom: 3px solid #0A2342;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .header .company-name {
+      font-size: 26pt;
+      font-weight: bold;
+      color: #0A2342;
+      letter-spacing: 2px;
+    }
+    .header .tagline {
+      font-size: 10pt;
+      color: #1B6CA8;
+      margin-top: 3px;
+    }
+    .header .gold-line {
+      height: 3px;
+      background: linear-gradient(to right, transparent, #C9A84C, #F0C040, #C9A84C, transparent);
+      margin: 8px auto;
+      width: 60%;
+    }
+    .report-title-bar {
+      background-color: #0A2342;
+      color: #fff;
+      font-size: 13pt;
+      font-weight: bold;
+      text-align: center;
+      padding: 7px 0;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+
+    /* ── Badges ── */
+    .cert-badges {
+      display: table;
+      width: 100%;
+      margin-bottom: 14px;
+    }
+    .badge {
+      display: table-cell;
+      text-align: center;
+      border: 1px solid #1B6CA8;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 8pt;
+      font-weight: bold;
+      color: #1B6CA8;
+      width: 25%;
+    }
+    .badge + .badge { border-left: none; }
+
+    /* ── Meta Info ── */
+    .section-title {
+      font-size: 11pt;
+      font-weight: bold;
+      color: #0A2342;
+      border-left: 4px solid #C9A84C;
+      padding-left: 8px;
+      margin-bottom: 8px;
+      margin-top: 14px;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+    }
+    .meta-table td {
+      padding: 5px 8px;
+      font-size: 9.5pt;
+      border: 1px solid #DDE6F5;
+    }
+    .meta-table td:first-child {
+      font-weight: bold;
+      background-color: #EEF4FF;
+      width: 35%;
+      color: #0A2342;
+    }
+    .meta-table td:nth-child(3) {
+      font-weight: bold;
+      background-color: #EEF4FF;
+      width: 30%;
+      color: #0A2342;
+    }
+
+    /* ── Parameters Table ── */
+    .params-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+    }
+    .params-table th {
+      background-color: #1B6CA8;
+      color: #fff;
+      font-size: 9pt;
+      font-weight: bold;
+      padding: 7px 6px;
+      text-align: center;
+    }
+    .params-table td {
+      padding: 5px 6px;
+      font-size: 9pt;
+      border-bottom: 1px solid #DDE6F5;
+      text-align: center;
+    }
+    .params-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+    }
+    .params-table tr:nth-child(even) td {
+      background-color: #F5F9FF;
+    }
+    .badge-pass {
+      background-color: #d4f5e2;
+      color: #1a8a4a;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 8.5pt;
+      border: 1px solid #2ECC71;
+    }
+    .badge-fail {
+      background-color: #fde8e6;
+      color: #c0392b;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 8.5pt;
+      border: 1px solid #E74C3C;
+    }
+
+    /* ── Overall Result ── */
+    .result-box {
+      text-align: center;
+      padding: 12px;
+      margin-bottom: 14px;
+      border-radius: 6px;
+    }
+    .result-pass {
+      background-color: #d4f5e2;
+      border: 2px solid #2ECC71;
+      color: #1a8a4a;
+    }
+    .result-fail {
+      background-color: #fde8e6;
+      border: 2px solid #E74C3C;
+      color: #c0392b;
+    }
+    .result-box .result-label {
+      font-size: 12pt;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .result-box .result-sub {
+      font-size: 9pt;
+      margin-top: 2px;
+    }
+
+    /* ── Remarks ── */
+    .remarks-box {
+      border: 1px solid #DDE6F5;
+      background-color: #F5F9FF;
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-size: 9.5pt;
+      margin-bottom: 14px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 2px solid #0A2342;
+      padding-top: 10px;
+      margin-top: 16px;
+    }
+    .footer-grid {
+      display: table;
+      width: 100%;
+    }
+    .footer-col {
+      display: table-cell;
+      width: 33%;
+      text-align: center;
+      font-size: 8.5pt;
+      color: #5C6B85;
+    }
+    .footer-col .sign-line {
+      border-top: 1px solid #0A2342;
+      width: 80%;
+      margin: 30px auto 4px auto;
+    }
+    .footer-col .sign-label {
+      font-weight: bold;
+      color: #0A2342;
+      font-size: 9pt;
+    }
+    .footer-bottom {
+      text-align: center;
+      font-size: 8pt;
+      color: #5C6B85;
+      margin-top: 10px;
+    }
+    .qr-note {
+      font-size: 8pt;
+      color: #1B6CA8;
+      text-align: center;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="company-name">SIERRA PURE</div>
+    <div class="gold-line"></div>
+    <div class="tagline">Premium Mineral Water | Purity You Can Trust</div>
+    <div class="tagline" style="font-size:8.5pt; margin-top:2px;">
+      📍 Maharashtra, India &nbsp;|&nbsp; 📞 +91 98765 43210 &nbsp;|&nbsp; 🌐 www.sierrapure.in
+    </div>
+  </div>
+
+  <div class="report-title-bar">WATER QUALITY LABORATORY REPORT</div>
+
+  <!-- Certification Badges -->
+  <div class="cert-badges">
+    <div class="badge">✓ BIS Certified</div>
+    <div class="badge">✓ FSSAI Licensed</div>
+    <div class="badge">✓ NABL Tested</div>
+    <div class="badge">✓ 7-Stage Filtration</div>
+  </div>
+
+  <!-- Report Meta -->
+  <div class="section-title">Report Information</div>
+  <table class="meta-table">
+    <tr>
+      <td>Report ID</td>
+      <td th:text="${report.reportId}">SP-2026-001</td>
+      <td>Batch Number</td>
+      <td th:text="${report.batchNumber}">BATCH-20260301-A1</td>
+    </tr>
+    <tr>
+      <td>Manufacturing Date</td>
+      <td th:text="${#temporals.format(report.manufacturingDate, 'dd MMMM yyyy')}">01 March 2026</td>
+      <td>Report Date</td>
+      <td th:text="${#temporals.format(report.reportDate, 'dd MMMM yyyy')}">01 March 2026</td>
+    </tr>
+    <tr>
+      <td>Testing Laboratory</td>
+      <td th:text="${report.labName}">NABL Certified Lab</td>
+      <td>Lab Certification</td>
+      <td th:text="${report.labCertification}">NABL Accredited</td>
+    </tr>
+    <tr>
+      <td>Tested By</td>
+      <td th:text="${report.testedBy}">Dr. A. Sharma</td>
+      <td>Bottle Size</td>
+      <td th:text="${report.bottleSize}">500ml</td>
+    </tr>
+  </table>
+
+  <!-- Test Parameters -->
+  <div class="section-title">Test Parameters &amp; Results</div>
+  <table class="params-table">
+    <thead>
+      <tr>
+        <th style="text-align:left; width:30%">Parameter</th>
+        <th style="width:15%">Value</th>
+        <th style="width:10%">Unit</th>
+        <th style="width:25%">Permissible Limit</th>
+        <th style="width:12%">Method</th>
+        <th style="width:8%">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="param : ${report.parameters}">
+        <td th:text="${param.name}">pH Level</td>
+        <td th:text="${param.value}">7.2</td>
+        <td th:text="${param.unit}">-</td>
+        <td th:text="${param.permissibleLimit}">6.5 - 8.5</td>
+        <td th:text="${param.method != null ? param.method : 'IS 3025'}">IS 3025</td>
+        <td>
+          <span th:if="${param.status == 'PASS'}" class="badge-pass">PASS</span>
+          <span th:unless="${param.status == 'PASS'}" class="badge-fail">FAIL</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Overall Result -->
+  <div th:class="${report.overallResult == 'PASS'} ? 'result-box result-pass' : 'result-box result-fail'">
+    <div class="result-label">
+      OVERALL RESULT:
+      <span th:text="${report.overallResult}">PASS</span>
+    </div>
+    <div class="result-sub">
+      All parameters tested conform to IS 10500:2012 standards for packaged drinking water.
+    </div>
+  </div>
+
+  <!-- Remarks -->
+  <div th:if="${report.remarks != null and !report.remarks.isEmpty()}">
+    <div class="section-title">Remarks</div>
+    <div class="remarks-box" th:text="${report.remarks}"></div>
+  </div>
+
+  <!-- QR Note -->
+  <div class="qr-note">
+    🔍 Scan the QR code on the bottle to verify this report online — Report ID: <span th:text="${report.reportId}"></span>
+  </div>
+
+  <!-- Footer / Signatures -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="sign-line"></div>
+        <div class="sign-label">Quality Control Officer</div>
+        <div>Sierra Pure Manufacturing</div>
+      </div>
+      <div class="footer-col">
+        <div class="sign-line"></div>
+        <div class="sign-label">Laboratory Analyst</div>
+        <div th:text="${report.labName}">Certified Lab</div>
+      </div>
+      <div class="footer-col">
+        <div class="sign-line"></div>
+        <div class="sign-label">Authorized Signatory</div>
+        <div>NABL Accredited Laboratory</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      This is a computer-generated report. Valid only with official laboratory stamp.
+      Sierra Pure | FSSAI Lic. No. 10020001234567 | BIS Cert. No. CM/L-1234567
+    </div>
+  </div>
+
+</body>
+</html>

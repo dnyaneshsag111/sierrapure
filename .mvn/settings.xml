@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Local Maven settings for Sierra Pure project.
+  Overrides the global ~/.m2/settings.xml so that:
+    - Only Maven Central is used (no corporate Azure Artifacts feeds)
+    - Local repository is kept inside this project at .mvn/repository
+    - No credentials or artifacts are uploaded/downloaded to external feeds
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <!-- Keep the local Maven repository inside the project directory -->
+  <localRepository>${project.basedir}/.mvn/repository</localRepository>
+
+  <!-- No servers — no corporate credentials used for this project -->
+  <servers/>
+
+  <!-- No mirrors — go straight to Maven Central -->
+  <mirrors/>
+
+  <profiles>
+    <profile>
+      <id>sierrapure-local</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <name>Maven Central</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <name>Maven Central Plugins</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
+  <!-- Only the local project profile is active — Azure Artifacts is NOT active here -->
+  <activeProfiles>
+    <activeProfile>sierrapure-local</activeProfile>
+  </activeProfiles>
+
+</settings>

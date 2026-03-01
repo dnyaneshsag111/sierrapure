@@ -1,0 +1,51 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Local Maven repository (kept inside project — not committed) ###
+.mvn/repository/
+
+### Uploaded images (stored locally — not committed, use cloud in prod) ###
+uploads/bottles/*
+uploads/clients/*
+uploads/logo/*
+# Keep the folder structure in git
+!uploads/bottles/.gitkeep
+!uploads/clients/.gitkeep
+!uploads/logo/.gitkeep
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Frontend ###
+ui/node_modules/
+ui/dist/
+ui/.env.local
+

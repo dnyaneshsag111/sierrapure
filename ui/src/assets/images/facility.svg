@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#B3E5FC"/>
+      <stop offset="100%" style="stop-color:#E1F5FE"/>
+    </linearGradient>
+    <linearGradient id="bldg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2342"/>
+      <stop offset="100%" style="stop-color:#1B6CA8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky)"/>
+  <path d="M0,300 L150,180 L300,250 L450,140 L600,220 L750,160 L800,200 L800,500 L0,500 Z" fill="rgba(79,195,247,0.15)"/>
+  <rect x="150" y="180" width="500" height="280" rx="4" fill="url(#bldg)"/>
+  <rect x="160" y="195" width="480" height="260" rx="3" fill="rgba(27,108,168,0.25)"/>
+  <!-- Windows row 1 -->
+  <rect x="185" y="220" width="60" height="45" rx="3" fill="rgba(79,195,247,0.5)"/>
+  <rect x="260" y="220" width="60" height="45" rx="3" fill="rgba(79,195,247,0.5)"/>
+  <rect x="335" y="220" width="60" height="45" rx="3" fill="rgba(79,195,247,0.5)"/>
+  <rect x="410" y="220" width="60" height="45" rx="3" fill="rgba(79,195,247,0.5)"/>
+  <rect x="485" y="220" width="60" height="45" rx="3" fill="rgba(79,195,247,0.5)"/>
+  <rect x="560" y="220" width="60" height="45" rx="3" fill="rgba(79,195,247,0.5)"/>
+  <!-- Windows row 2 -->
+  <rect x="185" y="285" width="60" height="45" rx="3" fill="rgba(79,195,247,0.4)"/>
+  <rect x="260" y="285" width="60" height="45" rx="3" fill="rgba(79,195,247,0.4)"/>
+  <rect x="335" y="285" width="60" height="45" rx="3" fill="rgba(79,195,247,0.4)"/>
+  <rect x="410" y="285" width="60" height="45" rx="3" fill="rgba(79,195,247,0.4)"/>
+  <rect x="485" y="285" width="60" height="45" rx="3" fill="rgba(79,195,247,0.4)"/>
+  <rect x="560" y="285" width="60" height="45" rx="3" fill="rgba(79,195,247,0.4)"/>
+  <!-- Windows row 3 -->
+  <rect x="185" y="350" width="60" height="45" rx="3" fill="rgba(79,195,247,0.35)"/>
+  <rect x="260" y="350" width="60" height="45" rx="3" fill="rgba(79,195,247,0.35)"/>
+  <rect x="335" y="350" width="60" height="45" rx="3" fill="rgba(79,195,247,0.35)"/>
+  <rect x="410" y="350" width="60" height="45" rx="3" fill="rgba(79,195,247,0.35)"/>
+  <rect x="485" y="350" width="60" height="45" rx="3" fill="rgba(79,195,247,0.35)"/>
+  <rect x="560" y="350" width="60" height="45" rx="3" fill="rgba(79,195,247,0.35)"/>
+  <!-- Main entrance -->
+  <rect x="330" y="380" width="140" height="80" rx="4" fill="rgba(79,195,247,0.4)" stroke="#C9A84C" stroke-width="1.5"/>
+  <rect x="390" y="380" width="2" height="80" fill="rgba(201,168,76,0.5)"/>
+  <!-- Signboard -->
+  <rect x="285" y="193" width="230" height="36" rx="4" fill="#C9A84C" opacity="0.92"/>
+  <text x="400" y="218" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="700" fill="#0A2342" letter-spacing="2">SIERRA PURE</text>
+  <!-- Ground -->
+  <rect x="0" y="460" width="800" height="40" fill="rgba(10,35,66,0.3)"/>
+  <!-- Trees left -->
+  <ellipse cx="100" cy="395" rx="40" ry="50" fill="#1B6CA8" opacity="0.5"/>
+  <rect x="96" y="425" width="8" height="35" fill="#0A2342" opacity="0.7"/>
+  <!-- Trees right -->
+  <ellipse cx="700" cy="395" rx="40" ry="50" fill="#1B6CA8" opacity="0.5"/>
+  <rect x="696" y="425" width="8" height="35" fill="#0A2342" opacity="0.7"/>
+</svg>
