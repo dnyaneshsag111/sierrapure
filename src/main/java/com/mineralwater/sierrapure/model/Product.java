@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Document(collection = "products")
 @Data
@@ -44,6 +45,9 @@ public class Product {
     private String priceRange;
 
     private String packagingInfo;
+
+    // Pack configurations e.g. [{label:"Carton",quantity:24,unit:"bottles"}, {label:"Pallet",quantity:576,unit:"bottles"}]
+    private List<Map<String, Object>> packConfigurations;
 
     private int sortOrder;
 

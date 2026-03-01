@@ -1,8 +1,9 @@
-import { Box, Card, CardContent, Typography, Button, Chip } from '@mui/material';
+import { Box, Card, CardContent, Typography, Button, Chip, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import bottle200 from '../../assets/images/bottle-200ml.svg';
 import bottle500 from '../../assets/images/bottle-500ml.svg';
 import bottle1000 from '../../assets/images/bottle-1000ml.svg';
@@ -14,6 +15,7 @@ const SIZE_COLORS   = { '200ml': '#42A5F5', '500ml': '#1565C0', '1000ml': '#C9A8
 export default function ProductCard({ product, index = 0 }) {
   const fallbackImg = BOTTLE_IMAGES[product.size];
   const color = SIZE_COLORS[product.size] ?? '#1B6CA8';
+  const packConfs = product.packConfigurations ?? [];
 
   return (
     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
@@ -80,21 +82,47 @@ export default function ProductCard({ product, index = 0 }) {
           {/* Mineral profile mini chips */}
           <MineralProfileCompact size={product.size} />
 
+          {/* Pack configurations */}
+          {packConfs.length > 0 && (
+            <Box sx={{ mt: 1.5, display: 'flex', flexWrap: 'wrap', gap: 0.8 }}>
+              {packConfs.map((pc, i) => (
+                <Chip key={i} size="small"
+                  label={`${pc.label}: ${pc.quantity} ${pc.unit}`}
+                  sx={{ fontSize: '0.68rem', background: `${color}10`, color, fontWeight: 600, borderRadius: 9999 }}
+                />
+              ))}
+            </Box>
+          )}
+
           {product.priceRange && (
-            <Typography sx={{ fontWeight: 700, color: '#0A2342', mb: 2, fontSize: '0.9rem' }}>
+            <Typography sx={{ fontWeight: 700, color: '#0A2342', mt: 1.5, mb: 1, fontSize: '0.9rem' }}>
               {product.priceRange}
             </Typography>
           )}
 
-          <Button
-            component={Link} to="/contact" fullWidth variant="outlined" endIcon={<ArrowForwardIcon />}
-            sx={{
-              borderRadius: 9999, borderColor: color, color: color, fontWeight: 600, mt: 'auto',
-              '&:hover': { background: color, color: 'white' },
-            }}
-          >
-            Get Quote
-          </Button>
+          <Stack direction="row" spacing={1} sx={{ mt: 'auto', pt: 1 }}>
+            <Button
+              component={Link} to={`/products/${product.id}`} variant="outlined" fullWidth
+              startIcon={<InfoOutlinedIcon sx={{ fontSize: 16 }} />}
+              sx={{
+                borderRadius: 9999, borderColor: color, color, fontWeight: 600, fontSize: '0.8rem',
+                '&:hover': { background: `${color}10` },
+              }}
+            >
+              Details
+            </Button>
+            <Button
+              component={Link} to="/contact" variant="contained" fullWidth
+              endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />}
+              sx={{
+                borderRadius: 9999, background: `linear-gradient(135deg, #0A2342, ${color})`,
+                color: 'white', fontWeight: 600, fontSize: '0.8rem',
+                boxShadow: `0 4px 12px ${color}30`,
+              }}
+            >
+              Quote
+            </Button>
+          </Stack>
         </CardContent>
       </Card>
     </motion.div>

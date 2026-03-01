@@ -24,8 +24,10 @@ import { AuthProvider } from './context/AuthContext';
 const Home            = lazy(() => import('./pages/Home'));
 const About           = lazy(() => import('./pages/About'));
 const Products        = lazy(() => import('./pages/Products'));
+const ProductDetail   = lazy(() => import('./pages/ProductDetail'));
 const Clients         = lazy(() => import('./pages/Clients'));
 const Customization   = lazy(() => import('./pages/Customization'));
+const Pricing         = lazy(() => import('./pages/Pricing'));
 const LabReports      = lazy(() => import('./pages/LabReports'));
 const LabReportDetail = lazy(() => import('./pages/LabReportDetail'));
 const Contact         = lazy(() => import('./pages/Contact'));
@@ -70,8 +72,10 @@ function SiteLayout() {
             <Route path="/"                               element={<Home />} />
             <Route path="/about"                          element={<About />} />
             <Route path="/products"                       element={<Products />} />
+            <Route path="/products/:id"                   element={<ProductDetail />} />
             <Route path="/clients"                        element={<Clients />} />
             <Route path="/customization"                  element={<Customization />} />
+            <Route path="/pricing"                        element={<Pricing />} />
             <Route path="/contact"                        element={<Contact />} />
             <Route path="/lab-reports"                    element={<LabReports />} />
             <Route path="/lab-reports/:id"                element={<LabReportDetail />} />

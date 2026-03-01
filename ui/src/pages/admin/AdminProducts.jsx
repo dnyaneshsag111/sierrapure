@@ -19,12 +19,28 @@ function ProductEditDialog({ product, open, onClose }) {
   const fileRef = useRef();
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [packConfigStr, setPackConfigStr] = useState(
+    JSON.stringify(product.packConfigurations ?? [], null, 2)
+  );
+  const [packConfigError, setPackConfigError] = useState('');
 
   const save = useMutation({
     mutationFn: (data) => api.put(`/products/${product.id}`, data).then(r => r.data.data),
     onSuccess: () => { qc.invalidateQueries(['admin-products']); toast.success('Product saved!'); onClose(); },
     onError: () => toast.error('Save failed'),
   });
+
+  const handleSave = () => {
+    let packConfigurations = [];
+    try {
+      packConfigurations = JSON.parse(packConfigStr);
+      setPackConfigError('');
+    } catch {
+      setPackConfigError('Invalid JSON — please fix before saving.');
+      return;
+    }
+    save.mutate({ ...form, packConfigurations });
+  };
 
   const handleImageUpload = async (file) => {
     if (!file) return;
@@ -88,11 +104,23 @@ function ProductEditDialog({ product, open, onClose }) {
               onChange={e => setForm(p => ({ ...p, features: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }))}
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }} />
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth size="small" label='Pack Configurations (JSON)'
+              value={packConfigStr}
+              onChange={e => { setPackConfigStr(e.target.value); setPackConfigError(''); }}
+              multiline rows={5}
+              error={!!packConfigError}
+              helperText={packConfigError || 'Example: [{"label":"Carton","quantity":24,"unit":"bottles","idealFor":"Hotels"}]'}
+              inputProps={{ style: { fontFamily: 'monospace', fontSize: '0.78rem' } }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+          </Grid>
         </Grid>
       </DialogContent>
       <DialogActions sx={{ p: 2, gap: 1 }}>
         <Button onClick={onClose} sx={{ borderRadius: 9999, color: 'var(--text-muted)' }}>Cancel</Button>
-        <Button variant="contained" onClick={() => save.mutate(form)} disabled={save.isPending}
+        <Button variant="contained" onClick={handleSave} disabled={save.isPending}
           sx={{ background: 'linear-gradient(135deg,#0A2342,#1B6CA8)', color: 'white', borderRadius: 9999, px: 3 }}>
           {save.isPending ? 'Saving...' : 'Save Changes'}
         </Button>

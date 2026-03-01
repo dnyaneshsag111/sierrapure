@@ -18,6 +18,7 @@ const QUICK_LINKS = [
   { label: 'Home',          path: '/' },
   { label: 'About Us',      path: '/about' },
   { label: 'Products',      path: '/products' },
+  { label: 'B2B Pricing',   path: '/pricing' },
   { label: 'Our Clients',   path: '/clients' },
   { label: 'Customization', path: '/customization' },
   { label: 'Lab Reports',   path: '/lab-reports' },

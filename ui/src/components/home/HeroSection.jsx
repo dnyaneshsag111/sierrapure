@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Box, Container, Typography, Button, Stack, Grid, Chip } from '@mui/material';
+import { Box, Container, Typography, Button, Stack, Grid, Chip, useMediaQuery, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -7,11 +7,17 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import bottle500Fallback from '../../assets/images/bottle-500ml.svg';
 import { useImageAssets } from '../../hooks/useImageAssets';
 
+// Drop your looping video here — hero background (desktop only)
+// File: ui/src/assets/videos/sierra-hero.mp4
+let heroVideo = null;
+try { heroVideo = new URL('../../assets/videos/sierra-hero.mp4', import.meta.url).href; } catch { heroVideo = null; }
+
 const BADGES = ['BIS Certified', 'FSSAI Licensed', '7-Stage Filtration', 'NABL Tested'];
 
 export default function HeroSection() {
+  const theme    = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const { byLabel } = useImageAssets('HERO_BOTTLE');
-  // Use uploaded hero bottle if available, otherwise fall back to local SVG
   const heroBottle = byLabel['hero-bottle'] || bottle500Fallback;
 
   return (
@@ -26,6 +32,19 @@ export default function HeroSection() {
         mb: '-1px',
       }}
     >
+      {/* ── Video background (desktop only, optional) ── */}
+      {isDesktop && heroVideo && (
+        <Box
+          component="video"
+          src={heroVideo}
+          autoPlay muted loop playsInline
+          sx={{
+            position: 'absolute', inset: 0, width: '100%', height: '100%',
+            objectFit: 'cover', opacity: 0.18, zIndex: 0,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
       {/* Background blobs */}
       <Box
         sx={{
